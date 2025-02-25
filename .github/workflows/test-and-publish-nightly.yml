@@ -82,7 +82,7 @@ jobs:
               make COMMIT_TAG=$HASH FAT_BINARY=true release test -j
             ;;
             *)
-              make COMMIT_TAG=$HASH CC=/usr/local/musl/bin/musl-gcc release test-custom -j
+              make COMMIT_TAG=$HASH CC=/usr/local/musl/bin/musl-gcc release test -j
             ;;
           esac
           echo "archive=$(basename $(find . -type f -iname "async-profiler-*" ))" >> $GITHUB_OUTPUT

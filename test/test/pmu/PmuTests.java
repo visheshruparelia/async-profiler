@@ -63,7 +63,7 @@ public class PmuTests {
         try {
             diagnosePerformanceCounterAccess();
             System.out.println("Error file location: " + TestProcess.PROFERR);
-            p.profile("-e cycles -d 3 -o collapsed -f %f");
+            p.profile("-e cycles -i 1 -d 3 -o collapsed -f %f");
             Output out = p.readFile("%f");
             System.out.println("output: " + out);
             double ratio16K = out.ratio("test/pmu/Dictionary.test16K");

@@ -6,7 +6,7 @@ env:
   RELEASE_FROM_JAVA_VERSION: '11'
 
 jobs:
-  run-test:
+  build-jars:
     runs-on: ubuntu-24.04-arm
     steps:
       - name: Checkout sources

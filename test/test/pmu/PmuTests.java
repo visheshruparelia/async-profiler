@@ -61,15 +61,8 @@ public class PmuTests {
     @Test(mainClass = Dictionary.class, os = Os.LINUX)
     public void cycles(TestProcess p) throws Exception {
         try {
-            diagnosePerformanceCounterAccess();
-            System.out.println("Error file location: " + TestProcess.PROFERR);
-            p.profile("-e instructions -i 1 -d 3 -o collapsed -f %f");
+            p.profile("-e cycle -d 3 -o collapsed -f %f");
             Output out = p.readFile("%f");
-            System.out.println("output: " + out);
-            double ratio16K = out.ratio("test/pmu/Dictionary.test16K");
-            double ratio8M = out.ratio("test/pmu/Dictionary.test8M");
-            System.out.println("Ratio 16K: " + ratio16K);
-            System.out.println("Ratio 8M: " + ratio8M);
             Assert.isGreater(out.ratio("test/pmu/Dictionary.test16K"), 0.4);
             Assert.isGreater(out.ratio("test/pmu/Dictionary.test8M"), 0.4);
         } catch (Exception e) {

@@ -308,10 +308,8 @@ public class TestProcess implements Closeable {
         cmd.add("build/bin/asprof");
         addArgs(cmd, args);
         cmd.add(Long.toString(pid()));
-        log.log(Level.FINE, "Profiling " + cmd);
+        log.log(Level.INFO, "Profiling " + cmd);
         File outputFile = createTempFile(PROFOUT);
-        String identifier = String.valueOf(ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE));
-        System.out.println("Out file name: " + outputFile.toString() + " identifier: " + identifier);
         Process p = new ProcessBuilder(cmd)
                 .redirectOutput(outputFile)
                 .redirectError(createTempFile(PROFERR))
@@ -324,7 +322,7 @@ public class TestProcess implements Closeable {
             throw new IOException("Profiling call failed: " + readFile(PROFERR));
         }
 
-        return readFile(PROFOUT, identifier);
+        return readFile(PROFOUT);
     }
 
     public File getFile(String fileId) {
@@ -337,17 +335,11 @@ public class TestProcess implements Closeable {
 
     public Output readFile(String fileId) {
         File f = getFile(fileId);
-        System.out.println("file name: " + f.toString());
         try (Stream<String> stream = Files.lines(f.toPath())) {
             return new Output(stream.toArray(String[]::new));
         } catch (IOException | UncheckedIOException e) {
             System.out.println("Failed to read file: " + e.getMessage());
             return new Output(new String[0]);
         }
-    }
-
-    public Output readFile(String fileId, String identifier) {
-        System.out.println("identifier: " + identifier);
-        return readFile(fileId);
     }
 }

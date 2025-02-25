@@ -12,7 +12,7 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v4
       - name: Set kernel paranoid setting
-        run: sysctl kernel.perf_event_paranoid=1
+        run: sudo sysctl kernel.perf_event_paranoid=1
       - name: Run uname -a
         run: uname -a
       - name: Run Make test

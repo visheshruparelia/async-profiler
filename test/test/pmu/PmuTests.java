@@ -26,36 +26,9 @@ public class PmuTests {
 
     private void diagnosePerformanceCounterAccess() {
         try {
-            // Check perf_event_paranoid setting
-            Process process = Runtime.getRuntime().exec("sysctl kernel.perf_event_paranoid");
-            try (BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(process.getInputStream()))) {
-                String paranoidLevel = reader.readLine();
-                System.out.println("Perf paranoid setting: " + paranoidLevel);
-                if (paranoidLevel != null && paranoidLevel.contains("= 3")) {
-                    System.out.println("WARNING: perf_event_paranoid is set to 3, which blocks all perf sampling!");
-                }
-            }
-
-            // Check if user can access perf
-            process = Runtime.getRuntime().exec("perf stat ls 2>&1");
-            try (BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(process.getInputStream()))) {
-                String line;
-                boolean hasError = false;
-                while ((line = reader.readLine()) != null) {
-                    if (line.contains("Permission denied") || line.contains("not allowed")) {
-                        hasError = true;
-                        System.out.println("Perf access error: " + line);
-                    }
-                }
-                if (!hasError) {
-                    System.out.println("Perf basic access check: OK");
-                }
-            }
             // Check Java process capabilities
             String pid = String.valueOf(ProcessHandle.current().pid());
-            process = Runtime.getRuntime().exec("getpcaps " + pid);
+            Process process = Runtime.getRuntime().exec("getpcaps " + pid);
             try (BufferedReader reader = new BufferedReader(
                     new InputStreamReader(process.getInputStream()))) {
                 String caps = reader.readLine();

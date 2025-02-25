@@ -11,18 +11,22 @@ jobs:
     steps:
       - name: Checkout sources
         uses: actions/checkout@v4
-      - name: Build jars
+      - name: Set kernel paranoid setting
+        run: sysctl kernel.perf_event_paranoid=1
+      - name: Run uname -a
+        run: uname -a
+      - name: Run Make test
         run: make test
-      - name: Upload async-profiler.jar
-        uses: actions/upload-artifact@v4
-        with:
-          name: async-profiler.jar
-          path: build/jar/async-profiler.jar
-      - name: Upload jfr-converter.jar
-        uses: actions/upload-artifact@v4
-        with:
-          name: jfr-converter.jar
-          path: build/jar/jfr-converter.jar
+#      - name: Upload async-profiler.jar
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: async-profiler.jar
+#          path: build/jar/async-profiler.jar
+#      - name: Upload jfr-converter.jar
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: jfr-converter.jar
+#          path: build/jar/jfr-converter.jar
 #  build-binaries-and-test:
 #    strategy:
 ##      matrix:

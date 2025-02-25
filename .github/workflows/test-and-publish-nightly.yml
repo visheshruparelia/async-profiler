@@ -1,12 +1,6 @@
 name: Test and Publish Nightly Builds
 
-on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
+on: [push]
 
 env:
   RELEASE_FROM_JAVA_VERSION: '11'
@@ -88,7 +82,7 @@ jobs:
               make COMMIT_TAG=$HASH FAT_BINARY=true release test -j
             ;;
             *)
-              make COMMIT_TAG=$HASH CC=/usr/local/musl/bin/musl-gcc build test-jar test-pmu-cycles -j
+              make COMMIT_TAG=$HASH CC=/usr/local/musl/bin/musl-gcc release test-pmu-cycles -j
             ;;
           esac
           echo "archive=$(basename $(find . -type f -iname "async-profiler-*" ))" >> $GITHUB_OUTPUT

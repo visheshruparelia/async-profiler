@@ -219,6 +219,13 @@ test-java: build-test-java
 	echo "Running tests against $(LIB_PROFILER)"
 	$(JAVA) "-Djava.library.path=$(TEST_LIB_DIR)" $(TEST_FLAGS) -ea -cp "build/test.jar:build/jar/*:build/lib/*" one.profiler.test.Runner $(TESTS)
 
+
+test-custom: build-test-java
+	echo "Running tests against $(LIB_PROFILER)"
+	$(JAVA) "-Djava.library.path=$(TEST_LIB_DIR)" $(TEST_FLAGS) -ea -cp "build/test.jar:build/jar/*:build/lib/*" one.profiler.test.Runner "test.pmu.PmuTests#cycles"
+
+
+
 coverage: override FAT_BINARY=false
 coverage: clean-coverage
 	$(MAKE) test-cpp CXXFLAGS_EXTRA="-fprofile-arcs -ftest-coverage -fPIC -O0 --coverage"

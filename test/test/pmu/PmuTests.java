@@ -53,7 +53,6 @@ public class PmuTests {
                     System.out.println("Perf basic access check: OK");
                 }
             }
-
             // Check Java process capabilities
             String pid = String.valueOf(ProcessHandle.current().pid());
             process = Runtime.getRuntime().exec("getpcaps " + pid);

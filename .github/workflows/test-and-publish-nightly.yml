@@ -134,67 +134,67 @@ jobs:
 #          path: |
 #            build/test/logs/
 #            hs_err*.log
-  publish-only-on-push:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-    name: publish (nightly)
-    runs-on: ubuntu-latest
-    needs: [build-jars, build-binaries-and-test]
-    steps:
-      - name: Download async-profiler binaries and jars
-        uses: actions/download-artifact@v4
-        with:
-          pattern: '*.*' # download everything except test logs
-          merge-multiple: 'true'
-      - name: Delete previous release and publish new release
-        uses: actions/github-script@v7
-        with:
-          result-encoding: string
-          script: |
-            const fs = require('fs').promises;
-            const commonOptions = {
-              owner: "async-profiler",
-              repo: "async-profiler",
-            };
-            let previousRelease = undefined;
-            try {
-              previousRelease = await github.rest.repos.getReleaseByTag({
-                ...commonOptions,
-                tag: "nightly",
-              });
-            } catch (e) {
-              console.log("No previous nightly release");
-              // ignore, there was no previous nightly release
-            }
-            if (previousRelease !== undefined) {
-              // delete previous release and nightly tag
-              await github.rest.repos.deleteRelease({
-                ...commonOptions,
-                release_id: previousRelease.data.id,
-              });
-              await github.rest.git.deleteRef({...commonOptions, ref: "tags/nightly"});
-            }
-            // create draft release
-            const newReleaseId = (await github.rest.repos.createRelease({
-              ...commonOptions,
-              tag_name: "nightly",
-              target_commitish: "${{ github.sha }}",
-              name: "Nightly builds",
-              body: "Async-profiler binaries published automatically from the latest sources in `master` upon a successful build.",
-              prerelease: true,
-              draft: true,
-            })).data.id;
-            // upload binaries and jars to draft release
-            for (const archiveName of await fs.readdir(process.cwd())) {
-              await github.rest.repos.uploadReleaseAsset({
-                ...commonOptions,
-                release_id: newReleaseId,
-                name: archiveName,
-                data: await fs.readFile(archiveName),
-              });
-            }
-            // publish release
-            await github.rest.repos.updateRelease({
-              ...commonOptions,
-              release_id: newReleaseId,
-              draft: false,
-            });
+#  publish-only-on-push:
+#    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+#    name: publish (nightly)
+#    runs-on: ubuntu-latest
+#    needs: [build-jars, build-binaries-and-test]
+#    steps:
+#      - name: Download async-profiler binaries and jars
+#        uses: actions/download-artifact@v4
+#        with:
+#          pattern: '*.*' # download everything except test logs
+#          merge-multiple: 'true'
+#      - name: Delete previous release and publish new release
+#        uses: actions/github-script@v7
+#        with:
+#          result-encoding: string
+#          script: |
+#            const fs = require('fs').promises;
+#            const commonOptions = {
+#              owner: "async-profiler",
+#              repo: "async-profiler",
+#            };
+#            let previousRelease = undefined;
+#            try {
+#              previousRelease = await github.rest.repos.getReleaseByTag({
+#                ...commonOptions,
+#                tag: "nightly",
+#              });
+#            } catch (e) {
+#              console.log("No previous nightly release");
+#              // ignore, there was no previous nightly release
+#            }
+#            if (previousRelease !== undefined) {
+#              // delete previous release and nightly tag
+#              await github.rest.repos.deleteRelease({
+#                ...commonOptions,
+#                release_id: previousRelease.data.id,
+#              });
+#              await github.rest.git.deleteRef({...commonOptions, ref: "tags/nightly"});
+#            }
+#            // create draft release
+#            const newReleaseId = (await github.rest.repos.createRelease({
+#              ...commonOptions,
+#              tag_name: "nightly",
+#              target_commitish: "${{ github.sha }}",
+#              name: "Nightly builds",
+#              body: "Async-profiler binaries published automatically from the latest sources in `master` upon a successful build.",
+#              prerelease: true,
+#              draft: true,
+#            })).data.id;
+#            // upload binaries and jars to draft release
+#            for (const archiveName of await fs.readdir(process.cwd())) {
+#              await github.rest.repos.uploadReleaseAsset({
+#                ...commonOptions,
+#                release_id: newReleaseId,
+#                name: archiveName,
+#                data: await fs.readFile(archiveName),
+#              });
+#            }
+#            // publish release
+#            await github.rest.repos.updateRelease({
+#              ...commonOptions,
+#              release_id: newReleaseId,
+#              draft: false,
+#            });

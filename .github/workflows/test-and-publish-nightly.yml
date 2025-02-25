@@ -6,14 +6,16 @@ env:
   RELEASE_FROM_JAVA_VERSION: '11'
 
 jobs:
-  build-jars:
+  run-test:
     runs-on: ubuntu-22.04-arm
     steps:
       - name: Checkout sources
         uses: actions/checkout@v4
-      - name: Set kernel paranoid setting
+      - name: Set kernel perf event paranoid setting
         run: sudo sysctl kernel.perf_event_paranoid=1
-      - name: Run uname -a
+      - name: Set kernel kptr restrict setting
+        run: sudo sysctl kernel.kptr_restrict=0
+      - name: Run uname -a to check kernel version
         run: uname -a
       - name: Run Make test
         run: make test

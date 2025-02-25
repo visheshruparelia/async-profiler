@@ -8,7 +8,14 @@ package test.pmu;
 import one.profiler.test.Arch;
 import one.profiler.test.Output;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFileAttributes;
+import java.nio.file.attribute.PosixFilePermissions;
 
 import one.profiler.test.Assert;
 import one.profiler.test.Test;
@@ -17,9 +24,72 @@ import one.profiler.test.Os;
 
 public class PmuTests {
 
+    private void diagnosePerformanceCounterAccess() {
+        try {
+            // Check perf_event_paranoid setting
+            Process process = Runtime.getRuntime().exec("sysctl kernel.perf_event_paranoid");
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream()))) {
+                String paranoidLevel = reader.readLine();
+                System.out.println("Perf paranoid setting: " + paranoidLevel);
+                if (paranoidLevel != null && paranoidLevel.contains("= 3")) {
+                    System.out.println("WARNING: perf_event_paranoid is set to 3, which blocks all perf sampling!");
+                }
+            }
+
+            // Check if user can access perf
+            process = Runtime.getRuntime().exec("perf stat ls 2>&1");
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream()))) {
+                String line;
+                boolean hasError = false;
+                while ((line = reader.readLine()) != null) {
+                    if (line.contains("Permission denied") || line.contains("not allowed")) {
+                        hasError = true;
+                        System.out.println("Perf access error: " + line);
+                    }
+                }
+                if (!hasError) {
+                    System.out.println("Perf basic access check: OK");
+                }
+            }
+
+            // Check Java process capabilities
+            String pid = String.valueOf(ProcessHandle.current().pid());
+            process = Runtime.getRuntime().exec("getpcaps " + pid);
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream()))) {
+                String caps = reader.readLine();
+                System.out.println("Current process capabilities: " + caps);
+            }
+
+            // Check output directory permissions
+            Path testDir = Paths.get("/tmp/");
+            System.out.println("Test directory permissions:");
+            System.out.println("Directory: " + testDir);
+            System.out.println("Exists: " + Files.exists(testDir));
+            if (Files.exists(testDir)) {
+                System.out.println("Readable: " + Files.isReadable(testDir));
+                System.out.println("Writable: " + Files.isWritable(testDir));
+                System.out.println("Executable: " + Files.isExecutable(testDir));
+
+                PosixFileAttributes attrs = Files.readAttributes(testDir, PosixFileAttributes.class);
+                System.out.println("Owner: " + attrs.owner().getName());
+                System.out.println("Group: " + attrs.group().getName());
+                System.out.println("Permissions: " + PosixFilePermissions.toString(attrs.permissions()));
+            }
+
+        } catch (IOException e) {
+            System.out.println("Error during diagnostics: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+
     @Test(mainClass = Dictionary.class, os = Os.LINUX)
     public void cycles(TestProcess p) throws Exception {
         try {
+            diagnosePerformanceCounterAccess();
             System.out.println("Error file location: " + TestProcess.PROFERR);
             p.profile("-e cycles -d 3 -o collapsed -f %f");
             Output out = p.readFile("%f");
@@ -31,6 +101,7 @@ public class PmuTests {
             Assert.isGreater(out.ratio("test/pmu/Dictionary.test16K"), 0.4);
             Assert.isGreater(out.ratio("test/pmu/Dictionary.test8M"), 0.4);
         } catch (Exception e) {
+            System.out.println("Full exception: " + e);
             if (!p.readFile(TestProcess.PROFERR).contains("Perf events unavailable")) {
                 throw e;
             }

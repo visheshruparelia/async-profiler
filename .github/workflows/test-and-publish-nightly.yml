@@ -1,12 +1,6 @@
 name: Test and Publish Nightly Builds
 
-on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
+on: [push]
 
 env:
   RELEASE_FROM_JAVA_VERSION: '11'

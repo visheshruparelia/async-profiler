@@ -251,9 +251,9 @@ clean-coverage:
 clean:
 	$(RM) -r build
 
-test-pmu: build test-jar
-	$(JAVA) $(JAVA_FLAGS) -cp $(TEST_JAR):$(JUNIT_JAR) org.junit.runner.JUnitCore test.pmu.PmuTests
+test-pmu:
+	$(MAKE) test TEST_FILTER="test.pmu.PmuTests"
 
-# For running just the cycles test
-test-pmu-cycles: build test-jar
-	$(JAVA) $(JAVA_FLAGS) -cp $(TEST_JAR):$(JUNIT_JAR) org.junit.runner.JUnitCore "test.pmu.PmuTests#cycles"
+test-pmu-cycles:
+	$(MAKE) test TEST_FILTER="test.pmu.PmuTests#cycles"
+

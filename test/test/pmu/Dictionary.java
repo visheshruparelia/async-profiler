@@ -22,8 +22,10 @@ public class Dictionary {
         long startTime = System.nanoTime();
 
         for (long i = 0; i < Long.MAX_VALUE; i++) {
-            int index = ThreadLocalRandom.current().nextInt(bound);
-            array[index]++;
+            for (long j = 0; j < Long.MAX_VALUE; j++) {
+                int index = ThreadLocalRandom.current().nextInt(bound);
+                array[index]++;
+            }
         }
 
         long endTime = System.nanoTime();

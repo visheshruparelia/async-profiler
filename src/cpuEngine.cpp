@@ -108,7 +108,7 @@ int CpuEngine::createForAllThreads() {
         }
     }
     delete thread_list;
-    printf("*** createForAllThreads result %d\n", result)
+    printf("*** createForAllThreads result %d\n", result);
     return result;
 }
 

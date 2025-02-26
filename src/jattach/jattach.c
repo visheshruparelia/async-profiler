@@ -39,6 +39,7 @@ int jattach(int pid, int argc, char** argv, int print_output) {
     // If we are running under root, switch to the required euid/egid automatically.
     if ((my_gid != target_gid && setegid(target_gid) != 0) ||
         (my_uid != target_uid && seteuid(target_uid) != 0)) {
+        printf("Failed to change credentials to match the target process\n");
         perror("Failed to change credentials to match the target process");
         return 1;
     }
@@ -49,8 +50,10 @@ int jattach(int pid, int argc, char** argv, int print_output) {
     signal(SIGPIPE, SIG_IGN);
 
     if (is_openj9_process(nspid)) {
+        printf("j9 process\n");
         return jattach_openj9(pid, nspid, argc, argv, print_output);
     } else {
+        printf("hotspot process\n");
         return jattach_hotspot(pid, nspid, argc, argv, print_output);
     }
 }

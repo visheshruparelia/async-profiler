@@ -97,6 +97,7 @@ int CpuEngine::createForAllThreads() {
 
     ThreadList* thread_list = OS::listThreads();
     while (thread_list->hasNext()) {
+        printf("*** thread %d\n", thread_list->next());
         int tid = thread_list->next();
         int err = createForThread(tid);
         if (isResourceLimit(err)) {
@@ -107,7 +108,7 @@ int CpuEngine::createForAllThreads() {
         }
     }
     delete thread_list;
-
+    printf("*** createForAllThreads result %d\n", result)
     return result;
 }
 

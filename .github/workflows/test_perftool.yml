@@ -8,7 +8,7 @@ jobs:
       - name: Install perf
         run: sudo apt-get update && sudo apt-get install linux-tools-generic
       - name: Enable perf event paranoid flag
-        run: sudo sysctl kernel.perf_event_paranoid = 1
+        run: sudo sysctl kernel.perf_event_paranoid=1
       - name: Run perf stat
         run: sudo perf stat -e cycles -a sleep 5
 
@@ -18,7 +18,7 @@ jobs:
       - name: Install perf
         run: sudo apt-get install linux-tools-generic
       - name: Enable perf event paranoid flag
-        run: sudo sysctl kernel.perf_event_paranoid = 1
+        run: sudo sysctl kernel.perf_event_paranoid=1
       - name: Run perf stat
         run: sudo perf stat -e cycles -a sleep 5
 

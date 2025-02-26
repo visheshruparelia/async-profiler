@@ -359,11 +359,11 @@ static void run_jattach(int pid, String& cmd) {
     } else {
         int ret = wait_for_exit(child);
         if (ret != 0) {
-            cout << "Hello World!, return non 0";
+            printf("Hello World!, return non 0");
             print_file(logfile, STDERR_FILENO);
             exit(WEXITSTATUS(ret));
         }
-        cout << "Hello World!, return 0";
+        printf("Hello World!, return 0");
         print_file(logfile, STDERR_FILENO);
         if (use_tmp_file) print_file(file, STDOUT_FILENO);
     }

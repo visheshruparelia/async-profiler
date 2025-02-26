@@ -5,15 +5,15 @@ jobs:
   test-perf-tool-arm:
     runs-on: ubuntu-24.04-arm
     steps:
-      - name: Install perf tools
-        run: sudo apt-get install perf
+      - name: Install perf
+        run: sudo apt-get install linux-tools
       - name: Run perf list
         run: perf list
   test-perf-tool-x64:
     runs-on: ubuntu-latest
     steps:
-      - name: Install perf tools
-        run: sudo apt-get install perf
+      - name: Install perf
+        run: sudo apt-get install linux-tools
       - name: Run perf list
         run: perf list
 

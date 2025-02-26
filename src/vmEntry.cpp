@@ -421,6 +421,7 @@ Agent_OnLoad(JavaVM* vm, char* options, void* reserved) {
 
 extern "C" DLLEXPORT jint JNICALL
 Agent_OnAttach(JavaVM* vm, char* options, void* reserved) {
+    printf("Agent onAttach ******");
     Arguments args;
     Error error = args.parse(options);
 

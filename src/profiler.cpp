@@ -1017,6 +1017,7 @@ Engine* Profiler::selectEngine(const char* event_name) {
     } else if (strchr(event_name, '.') != NULL && strchr(event_name, ':') == NULL) {
         return &instrument;
     } else {
+    printf("perf_events engine ***\n");
         return &perf_events;
     }
 }

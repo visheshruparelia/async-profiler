@@ -994,6 +994,7 @@ bool Profiler::excludeTrace(FrameName* fn, CallTrace* trace) {
 }
 
 Engine* Profiler::selectEngine(const char* event_name) {
+printf("event_name: %s ****\n", event_name);
     if (event_name == NULL) {
         return &noop_engine;
     } else if (strcmp(event_name, EVENT_CPU) == 0) {

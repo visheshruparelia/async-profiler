@@ -61,9 +61,9 @@ public class PmuTests {
     @Test(mainClass = Dictionary.class, os = Os.LINUX)
     public void cycles(TestProcess p) throws Exception {
         try {
-            p.profile("-e cycles -i 1 -d 3 -o collapsed -f %f");
+            p.profile("-e cycles -i 1 -d 45 -o collapsed -f %f");
             Output out = p.readFile("%f");
-//            Assert.isGreater(out.ratio("test/pmu/Dictionary.test16K"), 0.4);
+            Assert.isGreater(out.ratio("test/pmu/Dictionary.test16K"), 0.4);
             Assert.isGreater(out.ratio("test/pmu/Dictionary.test8M"), 0.4);
         } catch (Exception e) {
             System.out.println("Full exception: " + e);

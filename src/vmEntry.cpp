@@ -399,6 +399,7 @@ jvmtiError VM::RetransformClassesHook(jvmtiEnv* jvmti, jint class_count, const j
 
 extern "C" DLLEXPORT jint JNICALL
 Agent_OnLoad(JavaVM* vm, char* options, void* reserved) {
+    printf("Agent onLoad ******");
     if (!_global_args._preloaded) {
         Error error = _global_args.parse(options);
 

@@ -10,7 +10,7 @@ jobs:
       - name: Enable perf event paranoid flag
         run: sudo sysctl kernel.perf_event_paranoid=1
       - name: Run perf stat
-        run: sudo perf stat -e cycles -a sleep 5
+        run: perf record -e cycles:k -a -- sleep 5
 
   test-perf-tool-x64:
     runs-on: ubuntu-latest
@@ -20,5 +20,5 @@ jobs:
       - name: Enable perf event paranoid flag
         run: sudo sysctl kernel.perf_event_paranoid=1
       - name: Run perf stat
-        run: sudo perf stat -e cycles -a sleep 5
+        run: sudo perf record -e cycles:k -a -- sleep 5
 

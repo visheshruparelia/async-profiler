@@ -355,15 +355,15 @@ static void run_jattach(int pid, String& cmd) {
 
     if (child == 0) {
         const char* argv[] = {"load", libpath.str(), libpath.str()[0] == '/' ? "true" : "false", cmd.str()};
-        exit(jattach(pid, 4, argv, 0));
+        exit(jattach(pid, 4, argv, 1));
     } else {
         int ret = wait_for_exit(child);
         if (ret != 0) {
-            printf("Hello World!, return non 0 %s", cmd);
+            printf("Hello World!, return non 0 %s", cmd.str());
             print_file(logfile, STDERR_FILENO);
             exit(WEXITSTATUS(ret));
         }
-        printf("Hello World!, return 0 %s", cmd);
+        printf("Hello World!, return 0 %s", cmd.str());
         print_file(logfile, STDERR_FILENO);
         if (use_tmp_file) print_file(file, STDOUT_FILENO);
     }

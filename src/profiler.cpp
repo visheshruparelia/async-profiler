@@ -1079,6 +1079,7 @@ Error Profiler::start(Arguments& args, bool reset) {
 
     Error error = checkJvmCapabilities();
     if (error) {
+    printf("Found error l1082 ***\n");
         return error;
     }
 
@@ -1195,8 +1196,10 @@ Error Profiler::start(Arguments& args, bool reset) {
         }
     }
 
+    printf("Starting engine l1199 ***\n");
     error = _engine->start(args);
     if (error) {
+        printf("Engine start error l1201 ***\n");
         goto error1;
     }
 
@@ -1732,6 +1735,7 @@ void Profiler::timerLoop(void* timer_id) {
 }
 
 Error Profiler::runInternal(Arguments& args, Writer& out) {
+    printf("Action value: %d\n", args._action);
     switch (args._action) {
         case ACTION_START:
         case ACTION_RESUME: {
@@ -1821,8 +1825,10 @@ Error Profiler::runInternal(Arguments& args, Writer& out) {
 }
 
 Error Profiler::run(Arguments& args) {
+    printf("run extranl ****\n");
     if (!args.hasOutputFile()) {
         LogWriter out;
+        printf("run extranl l1827****\n");
         return runInternal(args, out);
     } else {
         // Open output file under the lock to avoid races with background timer
@@ -1831,6 +1837,7 @@ Error Profiler::run(Arguments& args) {
         if (!out.is_open()) {
             return Error("Could not open output file");
         }
+        printf("run extranl l1836****\n");
         return runInternal(args, out);
     }
 }

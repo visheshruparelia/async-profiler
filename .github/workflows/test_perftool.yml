@@ -7,13 +7,14 @@ jobs:
     steps:
       - name: Install perf
         run: sudo apt-get update && sudo apt-get install linux-tools-generic
-      - name: Run perf list
-        run: sudo perf list
+      - name: Run perf stat
+        run: sudo perf stat -e cycles dd if=/dev/zero of=/dev/null count=100000
+
   test-perf-tool-x64:
     runs-on: ubuntu-latest
     steps:
       - name: Install perf
         run: sudo apt-get install linux-tools-generic
-      - name: Run perf list
-        run: sudo perf list
+      - name: Run perf stat
+        run: sudo perf stat -e cycles dd if=/dev/zero of=/dev/null count=100000
 

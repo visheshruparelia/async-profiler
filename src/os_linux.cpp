@@ -240,6 +240,7 @@ bool OS::isMusl() {
 }
 
 SigAction OS::installSignalHandler(int signo, SigAction action, SigHandler handler) {
+    printf("Signal installation started");
     struct sigaction sa;
     struct sigaction oldsa;
     sigemptyset(&sa.sa_mask);
@@ -256,6 +257,7 @@ SigAction OS::installSignalHandler(int signo, SigAction action, SigHandler handl
     }
 
     sigaction(signo, &sa, &oldsa);
+    printf("signal handler installed : %s", oldsa);
     return oldsa.sa_sigaction;
 }
 

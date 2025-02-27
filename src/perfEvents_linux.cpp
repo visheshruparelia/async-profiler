@@ -698,6 +698,7 @@ void PerfEvents::signalHandler(int signo, siginfo_t* siginfo, void* ucontext) {
 }
 
 void PerfEvents::signalHandlerJ9(int signo, siginfo_t* siginfo, void* ucontext) {
+    printf("signal handler is invoked with siginfo->si_code : %d", siginfo->si_code);
     if (siginfo->si_code <= 0) {
         // Looks like an external signal; don't treat as a profiling event
         return;
@@ -708,8 +709,10 @@ void PerfEvents::signalHandlerJ9(int signo, siginfo_t* siginfo, void* ucontext) 
         J9StackTraceNotification notif;
         StackContext java_ctx;
         notif.num_frames = _cstack == CSTACK_NO ? 0 : walk(OS::threadId(), ucontext, notif.addr, MAX_J9_NATIVE_FRAMES, &java_ctx);
+        printf("invoking checkoint j9 with counter value: %llu", counter);
         J9StackTraces::checkpoint(counter, &notif);
     } else {
+        printf("resetting buffer as _enabled is set to: %s", _enabled);
         resetBuffer(OS::threadId());
     }
 

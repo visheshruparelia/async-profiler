@@ -60,6 +60,13 @@ jobs:
         java-version: [11]
         java-distribution: [corretto]
         container: ["public.ecr.aws/async-profiler/asprof-builder-arm:latest"]
+        include:
+          - runson:
+              display: linux-x64
+              name: ubuntu-latest
+            java-version: 11
+            java-distribution: corretto
+            container: "public.ecr.aws/async-profiler/asprof-builder-x86:latest"
     runs-on: ${{ matrix.runson.name }}
     container:
       image: ${{ matrix.container }}

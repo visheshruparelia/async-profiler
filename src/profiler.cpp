@@ -1752,7 +1752,9 @@ Error Profiler::runInternal(Arguments& args, Writer& out) {
         }
         case ACTION_STOP: {
             Error error = stop();
+            printf("action stop ***");
             if (args._output == OUTPUT_NONE) {
+                printf("action stop output none***");
                 if (error) {
                     return error;
                 }
@@ -1765,7 +1767,9 @@ Error Profiler::runInternal(Arguments& args, Writer& out) {
         }
         case ACTION_DUMP: {
             Error error = dump(out, args);
+            printf("action dump here %s", error);
             if (error) {
+                printf("action dump error***");
                 return error;
             }
             break;

@@ -1464,7 +1464,7 @@ void Profiler::dumpCollapsed(Writer& out, Arguments& args) {
     std::vector<CallTraceSample*> samples;
     _call_trace_storage.collectSamples(samples);
      // Print the total number of samples
-     printf("Total samples collected: %zu\n", samples.size());
+     printf("Total samples collected: %d\n", samples.size());
 
     for (std::vector<CallTraceSample*>::const_iterator it = samples.begin(); it != samples.end(); ++it) {
         CallTrace* trace = (*it)->acquireTrace();

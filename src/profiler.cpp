@@ -1463,6 +1463,8 @@ void Profiler::dumpCollapsed(Writer& out, Arguments& args) {
 
     std::vector<CallTraceSample*> samples;
     _call_trace_storage.collectSamples(samples);
+     // Print the total number of samples
+     printf("Total samples collected: %zu\n", samples.size());
 
     for (std::vector<CallTraceSample*>::const_iterator it = samples.begin(); it != samples.end(); ++it) {
         CallTrace* trace = (*it)->acquireTrace();
@@ -1470,19 +1472,20 @@ void Profiler::dumpCollapsed(Writer& out, Arguments& args) {
 
         u64 counter = args._counter == COUNTER_SAMPLES ? (*it)->samples : (*it)->counter;
         if (counter == 0) {
-            std::cout << "Counter value: " << counter << std::endl;
+            printf("Counter value: %llu\n", counter);
             continue;
         }
-        std::cout << "Trace details:" << std::endl;
-        std::cout << "Number of frames: " << trace->num_frames << std::endl;
-        std::cout << "Counter value: " << counter << std::endl;
+        // Print trace information
+        printf("Trace details:\n");
+        printf("Number of frames: %d\n", trace->num_frames);
+        printf("Counter value: %llu\n", counter);
         
         // Print each frame in the trace
-        std::cout << "Frame stack:" << std::endl;
+        printf("Frame stack:\n");
 
         for (int j = trace->num_frames - 1; j >= 0; j--) {
             const char* frame_name = fn.name(trace->frames[j]);
-            std::cout << "Frame " << (trace->num_frames - j) << ": " << frame_name << std::endl;
+            printf("Frame %d: %s\n", (trace->num_frames - j), frame_name);
             out << frame_name << (j == 0 ? ' ' : ';');
         }
         // Beware of locale-sensitive conversion

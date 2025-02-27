@@ -258,9 +258,3 @@ clean-coverage:
 clean:
 	$(RM) -r build
 
-test-pmu:
-	$(MAKE) test TEST_FILTER="test.pmu.PmuTests"
-
-test-pmu-cycles:
-	$(MAKE) test TEST_FILTER="test.pmu.PmuTests#cycles"
-

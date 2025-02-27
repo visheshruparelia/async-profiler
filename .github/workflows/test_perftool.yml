@@ -11,7 +11,20 @@ jobs:
         run: sudo sysctl kernel.perf_event_paranoid=1
       - name: Run perf stat
         run: sudo perf record -e cycles:k -a -- sleep 5
-
+  test-specific-pid-arm:
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: Start background process
+        id: start-process
+        run: |
+          PID=$(bash -c 'size=$((8*1024*1024)); dd if=/dev/urandom of=/tmp/testfile bs=1M count=$((size/1024/1024)) 2>/dev/null; (start=$(date +%s%N); for ((i=0;i<1000;i++)); do for ((j=0;j<1000;j++)); do dd if=/tmp/testfile skip=$((RANDOM % (size/512))) bs=512 count=1 of=/dev/null 2>/dev/null; done; done; end=$(date +%s%N); echo "Time spent: $(bc <<< "scale=3; ($end-$start)/1000000000") seconds"; rm -f /tmp/testfile) & echo $!')
+          echo "process_pid=$PID" >> "$GITHUB_OUTPUT"
+      - name: Run perf command on PID
+        run:  sudo perf record -e cycles -p ${{ steps.start-process.outputs.process_pid }}"
+      - name: Use PID in next step to check status
+        run: |
+          echo "The process ID is ${{ steps.start-process.outputs.process_pid }}"
+          ps -p ${{ steps.start-process.outputs.process_pid }} || echo "Process not running"
   test-perf-tool-x64:
     runs-on: ubuntu-latest
     steps:
@@ -21,4 +34,18 @@ jobs:
         run: sudo sysctl kernel.perf_event_paranoid=1
       - name: Run perf stat
         run: sudo perf record -e cycles:k -a -- sleep 5
+  test-specific-pid-x64:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start background process
+        id: start-process
+        run: |
+          PID=$(bash -c 'size=$((8*1024*1024)); dd if=/dev/urandom of=/tmp/testfile bs=1M count=$((size/1024/1024)) 2>/dev/null; (start=$(date +%s%N); for ((i=0;i<1000;i++)); do for ((j=0;j<1000;j++)); do dd if=/tmp/testfile skip=$((RANDOM % (size/512))) bs=512 count=1 of=/dev/null 2>/dev/null; done; done; end=$(date +%s%N); echo "Time spent: $(bc <<< "scale=3; ($end-$start)/1000000000") seconds"; rm -f /tmp/testfile) & echo $!')
+          echo "process_pid=$PID" >> "$GITHUB_OUTPUT"
+      - name: Run perf command on PID
+        run: sudo perf record -e cycles -p ${{ steps.start-process.outputs.process_pid }}"
+      - name: Use PID in next step to check status
+        run: |
+          echo "The process ID is ${{ steps.start-process.outputs.process_pid }}"
+          ps -p ${{ steps.start-process.outputs.process_pid }} || echo "Process not running"
 

@@ -832,7 +832,7 @@ Error PerfEvents::start(Arguments& args) {
         }
     } else {
         printf("installing signal handler: %p\n", (void*)signalHandler);
-        OS::installSignalHandler(_signal, NULL, signalHandler);
+        OS::installSignalHandler(_signal, signalHandler, NULL);
     }
 
     // Enable pthread hook before traversing currently running threads

@@ -256,8 +256,8 @@ SigAction OS::installSignalHandler(int signo, SigAction action, SigHandler handl
         }
     }
 
-    sigaction(signo, &sa, &oldsa);
-    printf("signal handler installed : %s", oldsa);
+    int retcode = sigaction(signo, &sa, &oldsa);
+    printf("sigaction return code : %d", retcode);
     return oldsa.sa_sigaction;
 }
 

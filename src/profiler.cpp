@@ -1469,10 +1469,20 @@ void Profiler::dumpCollapsed(Writer& out, Arguments& args) {
         if (trace == NULL || excludeTrace(&fn, trace)) continue;
 
         u64 counter = args._counter == COUNTER_SAMPLES ? (*it)->samples : (*it)->counter;
-        if (counter == 0) continue;
+        if (counter == 0) {
+            std::cout << "Counter value: " << counter << std::endl;
+            continue;
+        }
+        std::cout << "Trace details:" << std::endl;
+        std::cout << "Number of frames: " << trace->num_frames << std::endl;
+        std::cout << "Counter value: " << counter << std::endl;
+        
+        // Print each frame in the trace
+        std::cout << "Frame stack:" << std::endl;
 
         for (int j = trace->num_frames - 1; j >= 0; j--) {
             const char* frame_name = fn.name(trace->frames[j]);
+            std::cout << "Frame " << (trace->num_frames - j) << ": " << frame_name << std::endl;
             out << frame_name << (j == 0 ? ' ' : ';');
         }
         // Beware of locale-sensitive conversion

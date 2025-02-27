@@ -11,9 +11,45 @@ jobs:
         run: sudo sysctl kernel.perf_event_paranoid=1
       - name: Run perf stat
         run: sudo perf record -e cycles:k -a -- sleep 5
-      - name: Start background process
+      - name: Create script
+        run: |
+          cat << 'EOF' > /tmp/test_script.sh
+          #!/bin/bash
+
+          # Set up parameters
+          size=$((8*1024*1024))
+          
+          # Create test file
+          dd if=/dev/urandom of=/tmp/testfile bs=1M count=$((size/1024/1024)) 2>/dev/null
+          
+          # Start timing
+          start=$(date +%s%N)
+          
+          # Nested loops for n^2 complexity
+          for ((i=0; i<1000; i++)); do 
+            for ((j=0; j<1000; j++)); do 
+              dd if=/tmp/testfile skip=$((RANDOM % (size/512))) bs=512 count=1 of=/dev/null 2>/dev/null
+            done
+          done
+          
+          # End timing
+          end=$(date +%s%N)
+          
+          # Calculate and print results
+          echo "Time spent: $(bc <<< "scale=3; ($end-$start)/1000000000") seconds"
+          
+          # Cleanup
+          rm -f /tmp/testfile
+          EOF
+          
+          chmod +x /tmp/test_script.sh
+      - name: Run script in background
         id: start-process
-        run: "bash -c 'size=\$((8*1024*1024)); dd if=/dev/urandom of=/tmp/testfile bs=1M count=\$((size/1024/1024)) 2>/dev/null; (start=\$(date +%s%N); for ((i=0;i<1000;i++)); do for ((j=0;j<1000;j++)); do dd if=/tmp/testfile skip=\$((RANDOM % (size/512))) bs=512 count=1 of=/dev/null 2>/dev/null; done; done; end=\$(date +%s%N); echo \"Time spent: \$(bc <<< \"scale=3; (\$end-\$start)/1000000000\") seconds\"; rm -f /tmp/testfile) > /tmp/output.log 2>&1 & PID=\$!; echo \"process_pid=\$PID\" >> \$GITHUB_OUTPUT; echo \"Started process with PID: \$PID\"'"
+        run: |
+          /tmp/test_script.sh > /tmp/output.log 2>&1 &
+          PID=$!
+          echo "process_pid=$PID" >> $GITHUB_OUTPUT
+          echo "Started process with PID: $PID"
       - name: Run perf command on PID
         run:  sudo perf record -e cycles -p ${{ steps.start-process.outputs.process_pid }}"
       - name: Use PID in next step to check status
@@ -29,9 +65,45 @@ jobs:
         run: sudo sysctl kernel.perf_event_paranoid=1
       - name: Run perf stat
         run: sudo perf record -e cycles:k -a -- sleep 5
-      - name: Start background process
+      - name: Create script
+        run: |
+          cat << 'EOF' > /tmp/test_script.sh
+          #!/bin/bash
+
+          # Set up parameters
+          size=$((8*1024*1024))
+          
+          # Create test file
+          dd if=/dev/urandom of=/tmp/testfile bs=1M count=$((size/1024/1024)) 2>/dev/null
+          
+          # Start timing
+          start=$(date +%s%N)
+          
+          # Nested loops for n^2 complexity
+          for ((i=0; i<1000; i++)); do 
+            for ((j=0; j<1000; j++)); do 
+              dd if=/tmp/testfile skip=$((RANDOM % (size/512))) bs=512 count=1 of=/dev/null 2>/dev/null
+            done
+          done
+          
+          # End timing
+          end=$(date +%s%N)
+          
+          # Calculate and print results
+          echo "Time spent: $(bc <<< "scale=3; ($end-$start)/1000000000") seconds"
+          
+          # Cleanup
+          rm -f /tmp/testfile
+          EOF
+          
+          chmod +x /tmp/test_script.sh
+      - name: Run script in background
         id: start-process
-        run: "bash -c 'size=\$((8*1024*1024)); dd if=/dev/urandom of=/tmp/testfile bs=1M count=\$((size/1024/1024)) 2>/dev/null; (start=\$(date +%s%N); for ((i=0;i<1000;i++)); do for ((j=0;j<1000;j++)); do dd if=/tmp/testfile skip=\$((RANDOM % (size/512))) bs=512 count=1 of=/dev/null 2>/dev/null; done; done; end=\$(date +%s%N); echo \"Time spent: \$(bc <<< \"scale=3; (\$end-\$start)/1000000000\") seconds\"; rm -f /tmp/testfile) > /tmp/output.log 2>&1 & PID=\$!; echo \"process_pid=\$PID\" >> \$GITHUB_OUTPUT; echo \"Started process with PID: \$PID\"'"
+        run: |
+          /tmp/test_script.sh > /tmp/output.log 2>&1 &
+          PID=$!
+          echo "process_pid=$PID" >> $GITHUB_OUTPUT
+          echo "Started process with PID: $PID"
       - name: Run perf command on PID
         run:  sudo perf record -e cycles -p ${{ steps.start-process.outputs.process_pid }}"
       - name: Use PID in next step to check status

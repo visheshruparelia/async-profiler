@@ -240,7 +240,7 @@ bool OS::isMusl() {
 }
 
 SigAction OS::installSignalHandler(int signo, SigAction action, SigHandler handler) {
-    printf("Signal installation started");
+    printf("Signal installation started for signo: %d\n", signo);
     struct sigaction sa;
     struct sigaction oldsa;
     sigemptyset(&sa.sa_mask);
@@ -257,7 +257,8 @@ SigAction OS::installSignalHandler(int signo, SigAction action, SigHandler handl
     }
 
     int retcode = sigaction(signo, &sa, &oldsa);
-    printf("sigaction return code : %d", retcode);
+    printf("signal handler installed: %p\n", (void*)sa.sa_handler);
+    printf("sigaction return code : %d\n", retcode);
     return oldsa.sa_sigaction;
 }
 

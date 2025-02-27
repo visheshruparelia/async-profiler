@@ -831,6 +831,7 @@ Error PerfEvents::start(Arguments& args) {
             return error;
         }
     } else {
+        printf("installing signal handler: %p\n", (void*)signalhandler);
         OS::installSignalHandler(_signal, signalHandler);
     }
 

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifdef __linux__
+ #ifdef __linux__
 
 #include <jvmti.h>
 #include <string.h>
@@ -677,6 +677,7 @@ u64 PerfEvents::readCounter(siginfo_t* siginfo, void* ucontext) {
 }
 
 void PerfEvents::signalHandler(int signo, siginfo_t* siginfo, void* ucontext) {
+    printf("signal handler is invoked with siginfo->si_code : %d", siginfo->si_code);
     if (siginfo->si_code <= 0) {
         // Looks like an external signal; don't treat as a profiling event
         return;
@@ -685,8 +686,10 @@ void PerfEvents::signalHandler(int signo, siginfo_t* siginfo, void* ucontext) {
     if (_enabled) {
         ExecutionEvent event(TSC::ticks());
         u64 counter = readCounter(siginfo, ucontext);
+        printf("invoking Profiler::recordSample with counter value: %llu", counter);
         Profiler::instance()->recordSample(ucontext, counter, PERF_SAMPLE, &event);
     } else {
+        printf("resetting buffer as _enabled is set to: %s", _enabled);
         resetBuffer(OS::threadId());
     }
 

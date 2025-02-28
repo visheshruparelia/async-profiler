@@ -51,7 +51,7 @@ jobs:
           echo "process_pid=$PID" >> $GITHUB_OUTPUT
           echo "Started process with PID: $PID"
       - name: Run perf command on PID
-        run:  sudo perf record -e cycles -p ${{ steps.start-process.outputs.process_pid }} -- sleep 10
+        run:  sudo perf record -e cycles -p ${{ steps.start-process.outputs.process_pid }} sleep 5
       - name: Use PID in next step to check status
         run: |
           echo "The process ID is ${{ steps.start-process.outputs.process_pid }}"
@@ -109,7 +109,7 @@ jobs:
           echo "process_pid=$PID" >> $GITHUB_OUTPUT
           echo "Started process with PID: $PID"
       - name: Run perf command on PID
-        run:  sudo perf record -e cycles -p ${{ steps.start-process.outputs.process_pid }} -- sleep 10
+        run:  sudo perf record -e cycles -p ${{ steps.start-process.outputs.process_pid }} sleep 5
       - name: Use PID in next step to check status
         run: |
           echo "The process ID is ${{ steps.start-process.outputs.process_pid }}"

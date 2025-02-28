@@ -17,7 +17,7 @@ import one.profiler.test.Os;
 
 public class PmuTests {
 
-    @Test(mainClass = Dictionary.class, os = Os.LINUX)
+    @Test(mainClass = Dictionary.class, os = Os.LINUX, arch = {Arch.X64, Arch.X86})
     public void cycles(TestProcess p) throws Exception {
         try {
             System.out.println("Error file location: " + TestProcess.PROFERR);

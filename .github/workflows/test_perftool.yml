@@ -51,15 +51,15 @@ jobs:
           echo "process_pid=$PID" >> $GITHUB_OUTPUT
           echo "Started process with PID: $PID"
       - name: Run perf command on PID
-        run:  sudo perf record -g -e cycles -p ${{ steps.start-process.outputs.process_pid }} -o perf.data sleep 5
+        run:  sudo perf record -g -e cycles -p ${{ steps.start-process.outputs.process_pid }} sleep 10
       - name: Use PID in next step to check status
         run: |
           echo "The process ID is ${{ steps.start-process.outputs.process_pid }}"
           ps -p ${{ steps.start-process.outputs.process_pid }} || echo "Process not running"
       - name: Run ls
         run: ls -la
-      - name: View perf output
-        run: sudo perf script -i perf.data
+#      - name: View perf output
+#        run: sudo perf script -i perf.data
   test-perf-tool-x64:
     runs-on: ubuntu-latest
     steps:
@@ -109,12 +109,12 @@ jobs:
           echo "process_pid=$PID" >> $GITHUB_OUTPUT
           echo "Started process with PID: $PID"
       - name: Run perf command on PID
-        run:  sudo perf record -g -e cycles -p ${{ steps.start-process.outputs.process_pid }} -o perf.data sleep 5
+        run:  sudo perf record -g -e cycles -p ${{ steps.start-process.outputs.process_pid }} sleep 10
       - name: Use PID in next step to check status
         run: |
           echo "The process ID is ${{ steps.start-process.outputs.process_pid }}"
           ps -p ${{ steps.start-process.outputs.process_pid }} || echo "Process not running"
       - name: Run ls
         run: ls -la
-      - name: View perf output
-        run: sudo perf script -i perf.data
+#      - name: View perf output
+#        run: sudo perf script -i perf.data

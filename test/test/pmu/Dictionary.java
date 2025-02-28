@@ -21,12 +21,15 @@ public class Dictionary {
     private static void testRandomRead(long[] array, int bound) {
         long startTime = System.nanoTime();
 
-        for (long i = 0; i < Integer.MAX_VALUE; i++) {
-            int index = ThreadLocalRandom.current().nextInt(bound);
-            array[index]++;
+        for (long i = 0; i < Long.MAX_VALUE; i++) {
+            for (long j = 0; j < Long.MAX_VALUE; j++) {
+                int index = ThreadLocalRandom.current().nextInt(bound);
+                array[index]++;
+            }
         }
 
         long endTime = System.nanoTime();
+        System.out.println("Bound: " + bound);
         System.out.printf("Time spent: %.3f\n", (endTime - startTime) / 1e9);
     }
 

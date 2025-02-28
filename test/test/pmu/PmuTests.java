@@ -8,7 +8,14 @@ package test.pmu;
 import one.profiler.test.Arch;
 import one.profiler.test.Output;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFileAttributes;
+import java.nio.file.attribute.PosixFilePermissions;
 
 import one.profiler.test.Assert;
 import one.profiler.test.Test;
@@ -19,12 +26,16 @@ public class PmuTests {
 
     @Test(mainClass = Dictionary.class, os = Os.LINUX)
     public void cycles(TestProcess p) throws Exception {
+        System.out.println(System.getProperty("os.arch"));
+        System.out.println("os_arch above this and github actions below");
+        System.out.println(System.getenv("GITHUB_ACTIONS"));
         try {
             p.profile("-e cycles -d 3 -o collapsed -f %f");
             Output out = p.readFile("%f");
             Assert.isGreater(out.ratio("test/pmu/Dictionary.test16K"), 0.4);
             Assert.isGreater(out.ratio("test/pmu/Dictionary.test8M"), 0.4);
         } catch (Exception e) {
+            System.out.println("Full exception: " + e);
             if (!p.readFile(TestProcess.PROFERR).contains("Perf events unavailable")) {
                 throw e;
             }

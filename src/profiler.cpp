@@ -994,6 +994,7 @@ bool Profiler::excludeTrace(FrameName* fn, CallTrace* trace) {
 }
 
 Engine* Profiler::selectEngine(const char* event_name) {
+printf("event_name: %s ****\n", event_name);
     if (event_name == NULL) {
         return &noop_engine;
     } else if (strcmp(event_name, EVENT_CPU) == 0) {
@@ -1017,6 +1018,7 @@ Engine* Profiler::selectEngine(const char* event_name) {
     } else if (strchr(event_name, '.') != NULL && strchr(event_name, ':') == NULL) {
         return &instrument;
     } else {
+    printf("perf_events engine ***\n");
         return &perf_events;
     }
 }
@@ -1079,6 +1081,7 @@ Error Profiler::start(Arguments& args, bool reset) {
 
     Error error = checkJvmCapabilities();
     if (error) {
+    printf("Found error l1082 ***\n");
         return error;
     }
 
@@ -1195,8 +1198,10 @@ Error Profiler::start(Arguments& args, bool reset) {
         }
     }
 
+    printf("Starting engine l1199 ***\n");
     error = _engine->start(args);
     if (error) {
+        printf("Engine start error l1201 ***\n");
         goto error1;
     }
 
@@ -1458,16 +1463,29 @@ void Profiler::dumpCollapsed(Writer& out, Arguments& args) {
 
     std::vector<CallTraceSample*> samples;
     _call_trace_storage.collectSamples(samples);
+     // Print the total number of samples
+     printf("Total samples collected: %d\n", samples.size());
 
     for (std::vector<CallTraceSample*>::const_iterator it = samples.begin(); it != samples.end(); ++it) {
         CallTrace* trace = (*it)->acquireTrace();
         if (trace == NULL || excludeTrace(&fn, trace)) continue;
 
         u64 counter = args._counter == COUNTER_SAMPLES ? (*it)->samples : (*it)->counter;
-        if (counter == 0) continue;
+        if (counter == 0) {
+            printf("Counter value: %llu\n", counter);
+            continue;
+        }
+        // Print trace information
+        printf("Trace details:\n");
+        printf("Number of frames: %d\n", trace->num_frames);
+        printf("Counter value: %llu\n", counter);
+        
+        // Print each frame in the trace
+        printf("Frame stack:\n");
 
         for (int j = trace->num_frames - 1; j >= 0; j--) {
             const char* frame_name = fn.name(trace->frames[j]);
+            printf("Frame %d: %s\n", (trace->num_frames - j), frame_name);
             out << frame_name << (j == 0 ? ' ' : ';');
         }
         // Beware of locale-sensitive conversion
@@ -1732,6 +1750,7 @@ void Profiler::timerLoop(void* timer_id) {
 }
 
 Error Profiler::runInternal(Arguments& args, Writer& out) {
+    printf("Action value: %d\n", args._action);
     switch (args._action) {
         case ACTION_START:
         case ACTION_RESUME: {
@@ -1746,7 +1765,9 @@ Error Profiler::runInternal(Arguments& args, Writer& out) {
         }
         case ACTION_STOP: {
             Error error = stop();
+            printf("action stop ***");
             if (args._output == OUTPUT_NONE) {
+                printf("action stop output none***");
                 if (error) {
                     return error;
                 }
@@ -1759,7 +1780,9 @@ Error Profiler::runInternal(Arguments& args, Writer& out) {
         }
         case ACTION_DUMP: {
             Error error = dump(out, args);
+            printf("action dump here %s", error);
             if (error) {
+                printf("action dump error***");
                 return error;
             }
             break;
@@ -1821,8 +1844,10 @@ Error Profiler::runInternal(Arguments& args, Writer& out) {
 }
 
 Error Profiler::run(Arguments& args) {
+    printf("run extranl ****\n");
     if (!args.hasOutputFile()) {
         LogWriter out;
+        printf("run extranl l1827****\n");
         return runInternal(args, out);
     } else {
         // Open output file under the lock to avoid races with background timer
@@ -1831,6 +1856,7 @@ Error Profiler::run(Arguments& args) {
         if (!out.is_open()) {
             return Error("Could not open output file");
         }
+        printf("run extranl l1836****\n");
         return runInternal(args, out);
     }
 }

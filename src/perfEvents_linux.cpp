@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#ifdef __linux__
+ #ifdef __linux__
 
 #include <jvmti.h>
 #include <string.h>
@@ -677,6 +677,7 @@ u64 PerfEvents::readCounter(siginfo_t* siginfo, void* ucontext) {
 }
 
 void PerfEvents::signalHandler(int signo, siginfo_t* siginfo, void* ucontext) {
+    printf("signal handler is invoked with siginfo->si_code : %d", siginfo->si_code);
     if (siginfo->si_code <= 0) {
         // Looks like an external signal; don't treat as a profiling event
         return;
@@ -685,8 +686,10 @@ void PerfEvents::signalHandler(int signo, siginfo_t* siginfo, void* ucontext) {
     if (_enabled) {
         ExecutionEvent event(TSC::ticks());
         u64 counter = readCounter(siginfo, ucontext);
+        printf("invoking Profiler::recordSample with counter value: %llu", counter);
         Profiler::instance()->recordSample(ucontext, counter, PERF_SAMPLE, &event);
     } else {
+        printf("resetting buffer as _enabled is set to: %s", _enabled);
         resetBuffer(OS::threadId());
     }
 
@@ -695,6 +698,7 @@ void PerfEvents::signalHandler(int signo, siginfo_t* siginfo, void* ucontext) {
 }
 
 void PerfEvents::signalHandlerJ9(int signo, siginfo_t* siginfo, void* ucontext) {
+    printf("signal handler is invoked with siginfo->si_code : %d", siginfo->si_code);
     if (siginfo->si_code <= 0) {
         // Looks like an external signal; don't treat as a profiling event
         return;
@@ -705,8 +709,10 @@ void PerfEvents::signalHandlerJ9(int signo, siginfo_t* siginfo, void* ucontext) 
         J9StackTraceNotification notif;
         StackContext java_ctx;
         notif.num_frames = _cstack == CSTACK_NO ? 0 : walk(OS::threadId(), ucontext, notif.addr, MAX_J9_NATIVE_FRAMES, &java_ctx);
+        printf("invoking checkoint j9 with counter value: %llu", counter);
         J9StackTraces::checkpoint(counter, &notif);
     } else {
+        printf("resetting buffer as _enabled is set to: %s", _enabled);
         resetBuffer(OS::threadId());
     }
 
@@ -800,6 +806,7 @@ Error PerfEvents::start(Arguments& args) {
     _alluser = args._alluser;
     _kernel_stack = !_alluser && _cstack != CSTACK_NO;
     if (_kernel_stack && !Symbols::haveKernelSymbols()) {
+    printf("l803 ****\n");
         Log::warn("Kernel symbols are unavailable due to restrictions. Try\n"
                   "  sysctl kernel.perf_event_paranoid=1\n"
                   "  sysctl kernel.kptr_restrict=0");
@@ -824,7 +831,8 @@ Error PerfEvents::start(Arguments& args) {
             return error;
         }
     } else {
-        OS::installSignalHandler(_signal, signalHandler);
+        printf("installing signal handler: %p\n", (void*)signalHandler);
+        OS::installSignalHandler(_signal, signalHandler, NULL);
     }
 
     // Enable pthread hook before traversing currently running threads
@@ -833,6 +841,7 @@ Error PerfEvents::start(Arguments& args) {
     // Create perf_events for all existing threads
     int err = createForAllThreads();
     if (err) {
+        printf("l837 ****\n");
         stop();
         if (err == EACCES || err == EPERM) {
             return Error("Perf events unavailable. Try --fdtransfer or --all-user option or 'sysctl kernel.perf_event_paranoid=1'");

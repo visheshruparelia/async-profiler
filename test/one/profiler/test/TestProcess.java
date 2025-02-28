@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -307,15 +308,16 @@ public class TestProcess implements Closeable {
         cmd.add("build/bin/asprof");
         addArgs(cmd, args);
         cmd.add(Long.toString(pid()));
-        log.log(Level.FINE, "Profiling " + cmd);
-
+        log.log(Level.INFO, "Profiling " + cmd);
+        File outputFile = createTempFile(PROFOUT);
         Process p = new ProcessBuilder(cmd)
-                .redirectOutput(createTempFile(PROFOUT))
+                .redirectOutput(outputFile)
                 .redirectError(createTempFile(PROFERR))
                 .start();
 
-        waitForExit(p, 10);
+        waitForExit(p, 60);
         int exitCode = p.waitFor();
+        System.out.println("Call completed, exit code: " + exitCode);
         if (exitCode != 0) {
             throw new IOException("Profiling call failed: " + readFile(PROFERR));
         }
@@ -336,6 +338,7 @@ public class TestProcess implements Closeable {
         try (Stream<String> stream = Files.lines(f.toPath())) {
             return new Output(stream.toArray(String[]::new));
         } catch (IOException | UncheckedIOException e) {
+            System.out.println("Failed to read file: " + e.getMessage());
             return new Output(new String[0]);
         }
     }

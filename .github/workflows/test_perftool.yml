@@ -1,0 +1,134 @@
+name: test_perftool.yml
+on: [push]
+
+jobs:
+  test-perf-tool-arm:
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: Env var
+        run: echo $GITHUB_ACTIONS
+      - name: Run cpuinfo
+        run: cat /proc/cpuinfo
+      - name: Install perf
+        run: sudo apt-get update && sudo apt-get install linux-tools-generic
+      - name: Enable perf event paranoid flag
+        run: sudo sysctl kernel.perf_event_paranoid=1
+      - name: Set Kernel KPTR  Restriction
+        run: sudo sysctl kernel.kptr_restrict=0
+#      - name: Create script
+#        run: |
+#          cat << 'EOF' > /tmp/test_script.sh
+#          #!/bin/bash
+#
+#          # Set up parameters
+#          size=$((8*1024*1024))
+#
+#          # Create test file
+#          dd if=/dev/urandom of=/tmp/testfile bs=1M count=$((size/1024/1024)) 2>/dev/null
+#
+#          # Start timing
+#          start=$(date +%s%N)
+#
+#          # Nested loops for n^2 complexity
+#          for ((i=0; i<1000; i++)); do
+#            for ((j=0; j<1000; j++)); do
+#              dd if=/tmp/testfile skip=$((RANDOM % (size/512))) bs=512 count=1 of=/dev/null 2>/dev/null
+#            done
+#          done
+#
+#          # End timing
+#          end=$(date +%s%N)
+#
+#          # Calculate and print results
+#          echo "Time spent: $(bc <<< "scale=3; ($end-$start)/1000000000") seconds"
+#
+#          # Cleanup
+#          rm -f /tmp/testfile
+#          EOF
+#
+#          chmod +x /tmp/test_script.sh
+#      - name: Run script in background
+#        id: start-process
+#        run: |
+#          /tmp/test_script.sh > /tmp/output.log 2>&1 &
+#          PID=$!
+#          echo "process_pid=$PID" >> $GITHUB_OUTPUT
+#          echo "Started process with PID: $PID"
+#      - name: Run perf command on PID
+#        run:  sudo perf record -g -e cycles -p ${{ steps.start-process.outputs.process_pid }} -o perf.data sleep 10
+#      - name: Use PID in next step to check status
+#        run: |
+#          echo "The process ID is ${{ steps.start-process.outputs.process_pid }}"
+#          ps -p ${{ steps.start-process.outputs.process_pid }} || echo "Process not running"
+      - name: Run perf command with -a
+        run:  sudo perf record -g -e cycles -a -o perf.data sleep 5
+      - name: Run ls
+        run: ls -la
+      - name: Run cat on perf.data
+        run: sudo cat perf.data
+      - name: View perf output
+        run: sudo perf script -i perf.data
+  test-perf-tool-x64:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run cpuinfo
+        run: cat /proc/cpuinfo
+      - name: Install perf
+        run: sudo apt-get install linux-tools-generic
+      - name: Enable perf event paranoid flag
+        run: sudo sysctl kernel.perf_event_paranoid=1
+      - name: Set Kernel KPTR  Restriction
+        run: sudo sysctl kernel.kptr_restrict=0
+#      - name: Create script
+#        run: |
+#          cat << 'EOF' > /tmp/test_script.sh
+#          #!/bin/bash
+#
+#          # Set up parameters
+#          size=$((8*1024*1024))
+#
+#          # Create test file
+#          dd if=/dev/urandom of=/tmp/testfile bs=1M count=$((size/1024/1024)) 2>/dev/null
+#
+#          # Start timing
+#          start=$(date +%s%N)
+#
+#          # Nested loops for n^2 complexity
+#          for ((i=0; i<1000; i++)); do
+#            for ((j=0; j<1000; j++)); do
+#              dd if=/tmp/testfile skip=$((RANDOM % (size/512))) bs=512 count=1 of=/dev/null 2>/dev/null
+#            done
+#          done
+#
+#          # End timing
+#          end=$(date +%s%N)
+#
+#          # Calculate and print results
+#          echo "Time spent: $(bc <<< "scale=3; ($end-$start)/1000000000") seconds"
+#
+#          # Cleanup
+#          rm -f /tmp/testfile
+#          EOF
+#
+#          chmod +x /tmp/test_script.sh
+#      - name: Run script in background
+#        id: start-process
+#        run: |
+#          /tmp/test_script.sh > /tmp/output.log 2>&1 &
+#          PID=$!
+#          echo "process_pid=$PID" >> $GITHUB_OUTPUT
+#          echo "Started process with PID: $PID"
+#      - name: Run perf command on PID
+#        run:  sudo perf record -g -e cycles -p ${{ steps.start-process.outputs.process_pid }} -o perf.data sleep 10
+#      - name: Use PID in next step to check status
+#        run: |
+#          echo "The process ID is ${{ steps.start-process.outputs.process_pid }}"
+#          ps -p ${{ steps.start-process.outputs.process_pid }} || echo "Process not running"
+      - name: Run perf command with -a
+        run:  sudo perf record -g -e cycles -a -o perf.data sleep 5
+      - name: Run ls
+        run: ls -la
+      - name: Run cat on perf.data
+        run: sudo cat perf.data
+      - name: View perf output
+        run: sudo perf script -i perf.data

@@ -9,8 +9,6 @@ jobs:
         run: sudo apt-get update && sudo apt-get install linux-tools-generic
       - name: Enable perf event paranoid flag
         run: sudo sysctl kernel.perf_event_paranoid=1
-      - name: Run perf stat
-        run: sudo perf record -e cycles:k -a -- sleep 5
       - name: Create script
         run: |
           cat << 'EOF' > /tmp/test_script.sh
@@ -67,8 +65,6 @@ jobs:
         run: sudo apt-get install linux-tools-generic
       - name: Enable perf event paranoid flag
         run: sudo sysctl kernel.perf_event_paranoid=1
-      - name: Run perf stat
-        run: sudo perf record -e cycles:k -a -- sleep 5
       - name: Create script
         run: |
           cat << 'EOF' > /tmp/test_script.sh

@@ -27,7 +27,7 @@ public class PmuTests {
     @Test(mainClass = Dictionary.class, os = Os.LINUX)
     public void cycles(TestProcess p) throws Exception {
         System.out.println(System.getProperty("os.arch"));
-        System.out.println(System.getProperty("os_arch above this and github actions below"));
+        System.out.println("os_arch above this and github actions below");
         System.out.println(System.getProperty("GITHUB_ACTIONS"));
         try {
             p.profile("-e cycles -d 3 -o collapsed -f %f");

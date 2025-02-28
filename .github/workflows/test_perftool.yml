@@ -5,6 +5,8 @@ jobs:
   test-perf-tool-arm:
     runs-on: ubuntu-24.04-arm
     steps:
+      - name: Env var
+        run: echo $GITHUB_ACTIONS
       - name: Run cpuinfo
         run: cat /proc/cpuinfo
       - name: Install perf

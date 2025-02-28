@@ -88,6 +88,8 @@ jobs:
           # architecture: not specifying this defaults to architecture of the runner
       - name: Checkout sources
         uses: actions/checkout@v4
+      - name: Env var
+        run: echo $GITHUB_ACTIONS
       - name: Build and test
         id: build
         run: |

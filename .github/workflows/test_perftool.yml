@@ -59,7 +59,7 @@ jobs:
       - name: Run ls
         run: ls -la
       - name: View perf output
-        run: perf script
+        run: sudo perf script
   test-perf-tool-x64:
     runs-on: ubuntu-latest
     steps:
@@ -117,4 +117,4 @@ jobs:
       - name: Run ls
         run: ls -la
       - name: View perf output
-        run: perf script
+        run: sudo perf script

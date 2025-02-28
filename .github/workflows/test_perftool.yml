@@ -9,6 +9,8 @@ jobs:
         run: sudo apt-get update && sudo apt-get install linux-tools-generic
       - name: Enable perf event paranoid flag
         run: sudo sysctl kernel.perf_event_paranoid=1
+      - name: Set Kernel KPTR  Restriction
+        run: sudo sysctl kernel.kptr_restrict=0
       - name: Create script
         run: |
           cat << 'EOF' > /tmp/test_script.sh
@@ -49,7 +51,7 @@ jobs:
           echo "process_pid=$PID" >> $GITHUB_OUTPUT
           echo "Started process with PID: $PID"
       - name: Run perf command on PID
-        run:  sudo perf record -e cycles -p ${{ steps.start-process.outputs.process_pid }} -o perf.data sleep 5
+        run:  sudo perf record -e cycles -p ${{ steps.start-process.outputs.process_pid }} -o perf.data sleep 2
       - name: Use PID in next step to check status
         run: |
           echo "The process ID is ${{ steps.start-process.outputs.process_pid }}"
@@ -57,7 +59,7 @@ jobs:
       - name: Run ls
         run: ls -la
       - name: View perf output
-        run: sudo perf script -v -i perf.data
+        run: sudo perf script -i perf.data
   test-perf-tool-x64:
     runs-on: ubuntu-latest
     steps:
@@ -65,6 +67,8 @@ jobs:
         run: sudo apt-get install linux-tools-generic
       - name: Enable perf event paranoid flag
         run: sudo sysctl kernel.perf_event_paranoid=1
+      - name: Set Kernel KPTR  Restriction
+        run: sudo sysctl kernel.kptr_restrict=0
       - name: Create script
         run: |
           cat << 'EOF' > /tmp/test_script.sh
@@ -105,7 +109,7 @@ jobs:
           echo "process_pid=$PID" >> $GITHUB_OUTPUT
           echo "Started process with PID: $PID"
       - name: Run perf command on PID
-        run:  sudo perf record -e cycles -p ${{ steps.start-process.outputs.process_pid }} -o perf.data sleep 5
+        run:  sudo perf record -e cycles -p ${{ steps.start-process.outputs.process_pid }} -o perf.data sleep 2
       - name: Use PID in next step to check status
         run: |
           echo "The process ID is ${{ steps.start-process.outputs.process_pid }}"
@@ -113,4 +117,4 @@ jobs:
       - name: Run ls
         run: ls -la
       - name: View perf output
-        run: sudo perf script -v -i perf.data
+        run: sudo perf script -i perf.data

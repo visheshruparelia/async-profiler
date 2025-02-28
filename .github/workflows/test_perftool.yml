@@ -59,9 +59,9 @@ jobs:
       - name: Run ls
         run: ls -la
       - name: Run cat on perf.data
-        run: cat perf.data
-#      - name: View perf output
-#        run: sudo perf script -i perf.data
+        run: sudo cat perf.data
+      - name: View perf output
+        run: sudo perf script -i perf.data
   test-perf-tool-x64:
     runs-on: ubuntu-latest
     steps:
@@ -119,6 +119,6 @@ jobs:
       - name: Run ls
         run: ls -la
       - name: Run cat on perf.data
-        run: cat perf.data
+        run: sudo cat perf.data
       - name: View perf output
         run: sudo perf script -i perf.data

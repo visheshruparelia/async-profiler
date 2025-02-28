@@ -56,6 +56,8 @@ jobs:
         run: |
           echo "The process ID is ${{ steps.start-process.outputs.process_pid }}"
           ps -p ${{ steps.start-process.outputs.process_pid }} || echo "Process not running"
+      - name: View perf output
+        run: perf script
   test-perf-tool-x64:
     runs-on: ubuntu-latest
     steps:
@@ -110,3 +112,5 @@ jobs:
         run: |
           echo "The process ID is ${{ steps.start-process.outputs.process_pid }}"
           ps -p ${{ steps.start-process.outputs.process_pid }} || echo "Process not running"
+      - name: View perf output
+        run: perf script

@@ -16,21 +16,20 @@ import one.profiler.test.TestProcess;
 import one.profiler.test.Os;
 
 public class PmuTests {
-    private static final String GITHUB_ACTIONS_ENV_VAR = "GITHUB_ACTIONS";
-    private static final String OS_ARCH_ENV_VAR = "os.arch";
-    private static final String AARCH64 = "aarch64";
-    private static final String ARM = "arm";
 
     @Test(mainClass = Dictionary.class, os = Os.LINUX)
     public void cycles(TestProcess p) throws Exception {
         try {
-            // We are skipping the test in one case, for more details: https://github.com/actions/runner-images/issues/11689
-            if (isOsARMBased() && isRunningOnGithubActions()) {
-                System.out.println("Skipping the test PmuTests.cycles on ARM in GitHub Actions");
-                return;
-            }
             p.profile("-e cycles -d 3 -o collapsed -f %f");
             Output out = p.readFile("%f");
+            // We are skipping the test in one case, for more details: https://github.com/actions/runner-images/issues/11689
+            System.out.println("******here: " + out.total());
+            if (out.total() == 0 &&
+                System.getProperty("os.arch").contains("aarch64") &&
+                "true".equals(System.getenv("GITHUB_ACTIONS"))) {
+                System.out.println("Skipping the test PmuTests.cycles on ARM in GitHub Actions as no samples as have been collected");
+                return;
+            }
             Assert.isGreater(out.ratio("test/pmu/Dictionary.test16K"), 0.4);
             Assert.isGreater(out.ratio("test/pmu/Dictionary.test8M"), 0.4);
         } catch (Exception e) {
@@ -63,15 +62,5 @@ public class PmuTests {
         } catch (IOException e) {
             assert p.readFile(TestProcess.PROFERR).contains("PerfEvents are not supported on this platform");
         }
-    }
-
-    private boolean isOsARMBased() {
-        String arch = System.getProperty(OS_ARCH_ENV_VAR);
-        return arch.contains(AARCH64) || arch.contains(ARM);
-    }
-
-    private boolean isRunningOnGithubActions() {
-
-        return System.getenv(GITHUB_ACTIONS_ENV_VAR) != null && System.getenv(GITHUB_ACTIONS_ENV_VAR).equals("true");
     }
 }

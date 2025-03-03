@@ -130,7 +130,7 @@ jobs:
             build/test/logs/
             hs_err*.log
   publish-only-on-push:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    if: github.event_name == 'push'
     name: publish (nightly)
     runs-on: ubuntu-latest
     needs: [build-jars, build-binaries-and-test]
@@ -160,36 +160,37 @@ jobs:
               console.log("No previous nightly release");
               // ignore, there was no previous nightly release
             }
-            if (previousRelease !== undefined) {
-              // delete previous release and nightly tag
-              await github.rest.repos.deleteRelease({
-                ...commonOptions,
-                release_id: previousRelease.data.id,
-              });
-              await github.rest.git.deleteRef({...commonOptions, ref: "tags/nightly"});
-            }
+#            if (previousRelease !== undefined) {
+#              // delete previous release and nightly tag
+#              await github.rest.repos.deleteRelease({
+#                ...commonOptions,
+#                release_id: previousRelease.data.id,
+#              });
+#              await github.rest.git.deleteRef({...commonOptions, ref: "tags/nightly"});
+#            }
             // create draft release
-            const newReleaseId = (await github.rest.repos.createRelease({
-              ...commonOptions,
-              tag_name: "nightly",
-              target_commitish: "${{ github.sha }}",
-              name: "Nightly builds",
-              body: "Async-profiler binaries published automatically from the latest sources in `master` upon a successful build.",
-              prerelease: true,
-              draft: true,
-            })).data.id;
+#            const newReleaseId = (await github.rest.repos.createRelease({
+#              ...commonOptions,
+#              tag_name: "nightly",
+#              target_commitish: "${{ github.sha }}",
+#              name: "Nightly builds",
+#              body: "Async-profiler binaries published automatically from the latest sources in `master` upon a successful build.",
+#              prerelease: true,
+#              draft: true,
+#            })).data.id;
             // upload binaries and jars to draft release
             for (const archiveName of await fs.readdir(process.cwd())) {
-              await github.rest.repos.uploadReleaseAsset({
-                ...commonOptions,
-                release_id: newReleaseId,
-                name: archiveName,
-                data: await fs.readFile(archiveName),
-              });
+            console.log("Uploading", archiveName);
+#              await github.rest.repos.uploadReleaseAsset({
+#                ...commonOptions,
+#                release_id: newReleaseId,
+#                name: archiveName,
+#                data: await fs.readFile(archiveName),
+#              });
             }
             // publish release
-            await github.rest.repos.updateRelease({
-              ...commonOptions,
-              release_id: newReleaseId,
-              draft: false,
-            });
+#            await github.rest.repos.updateRelease({
+#              ...commonOptions,
+#              release_id: newReleaseId,
+#              draft: false,
+#            });

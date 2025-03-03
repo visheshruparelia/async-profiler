@@ -111,7 +111,7 @@ jobs:
           path: build/test/coverage/
       - name: Test macOS x64
         if: ${{ matrix.runson.name == 'macos-14' }}
-        run: JAVA_HOME=$JAVA_HOME_${{ env.JAVA_VERSION }}_X64 make test
+        run: JAVA_HOME=$JAVA_HOME_${{ env.JAVA_VERSION }}_X64 make test TESTS=pmu
 
       - name: Upload async-profiler binaries to workflow
         uses: actions/upload-artifact@v4

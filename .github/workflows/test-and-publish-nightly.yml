@@ -151,7 +151,7 @@ jobs:
           script: |
             const fs = require('fs').promises;
             const commonOptions = {
-              owner: "async-profiler",
+              owner: "visheshruparelia",
               repo: "async-profiler",
             };
             let previousRelease = undefined;

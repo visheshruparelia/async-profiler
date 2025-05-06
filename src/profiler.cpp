@@ -1208,6 +1208,7 @@ Error Profiler::start(Arguments& args, bool reset) {
     error = _engine->start(args);
     if (error) {
         printf("engine error\n");
+        printf("%s\n", error.message());
         goto error1;
     }
 

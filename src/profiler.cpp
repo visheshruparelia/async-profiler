@@ -35,6 +35,7 @@
 #include "symbols.h"
 #include "tsc.h"
 #include "vmStructs.h"
+#include <iostream>
 
 
 // The instance is not deleted on purpose, since profiler structures
@@ -1196,18 +1197,22 @@ Error Profiler::start(Arguments& args, bool reset) {
     if (args._output == OUTPUT_JFR) {
         error = _jfr.start(args, reset);
         if (error) {
+            printf("jfr error\n");
             uninstallTraps();
             switchLibraryTrap(false);
             return error;
         }
+        printf("jfr started\n");
     }
 
     error = _engine->start(args);
     if (error) {
+        printf("engine error\n");
         goto error1;
     }
 
     if (_event_mask & EM_ALLOC) {
+        printf("alloc start\n");
         _alloc_engine = selectAllocEngine(args._alloc, args._live);
         error = _alloc_engine->start(args);
         if (error) {
@@ -1215,18 +1220,21 @@ Error Profiler::start(Arguments& args, bool reset) {
         }
     }
     if (_event_mask & EM_LOCK) {
+        printf("lock tracer start\n");
         error = lock_tracer.start(args);
         if (error) {
             goto error3;
         }
     }
     if (_event_mask & EM_WALL) {
+        printf("wall clock start\n");
         error = wall_clock.start(args);
         if (error) {
             goto error4;
         }
     }
     if (_event_mask & EM_NATIVEMEM) {
+        printf("native mem start\n");
         error = malloc_tracer.start(args);
         if (error) {
             goto error5;

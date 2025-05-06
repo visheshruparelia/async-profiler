@@ -114,7 +114,7 @@ public class JfrTests {
      * @param p The test process to profile with.
      * @throws Exception Any exception thrown during profiling JFR output parsing.
      */
-    @Test(mainClass = JfrMutliModeProfiling.class, agentArgs = "start,all,event=cache-misses,alloc=2m,file=%f.jfr", os = Os.LINUX, output = true)
+    @Test(mainClass = JfrMutliModeProfiling.class, agentArgs = "start,all,event=cache-misses,alloc=2m,file=%f.jfr", os = Os.LINUX)
     public void allModeRecordingLinuxWithEventOverride(TestProcess p) throws Exception {
         try {
             p.waitForExit();

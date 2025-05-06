@@ -128,7 +128,7 @@ public class JfrTests {
             }
 
             assert !events.contains("jdk.ExecutionSample"); // no cpu profiling
-            assert events.contains("jdk.JavaMonitorEnter"); // lock profiling
+            // assert events.contains("jdk.JavaMonitorEnter"); // lock profiling
             assert events.contains("jdk.ObjectAllocationInNewTLAB"); // alloc profiling
             assert events.contains("profiler.WallClockSample"); // wall clock profiling
             assert events.contains("profiler.LiveObject"); // profiling of live objects

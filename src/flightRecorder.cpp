@@ -1304,7 +1304,6 @@ class Recording {
     }
 
     void recordMonitorBlocked(Buffer* buf, int tid, u32 call_trace_id, LockEvent* event) {
-        printf("record monitor block\n");
         int start = buf->skip(1);
         buf->put8(T_MONITOR_ENTER);
         buf->putVar64(event->_start_time);

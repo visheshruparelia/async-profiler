@@ -12,8 +12,8 @@ TEST_CASE(Parse_all_mode_no_override) {
     Error error = args.parse(argument);
     ASSERT_EQ(args._all, true);
     ASSERT_EQ(args._wall, 0);
-    ASSERT_EQ(args._alloc, 0);
-    ASSERT_EQ(args._nativemem, 0);
+    ASSERT_EQ(args._alloc, DEFAULT_ALLOC_INTERVAL);
+    ASSERT_EQ(args._nativemem, DEFAULT_ALLOC_INTERVAL);
     ASSERT_EQ(args._lock, DEFAULT_LOCK_INTERVAL);
     ASSERT_EQ(args._live, true);
     #ifdef __linux__
@@ -31,8 +31,8 @@ TEST_CASE(Parse_all_mode_event_override) {
     ASSERT_EQ(args._all, true);
     ASSERT_EQ(args._event, "cycles");
     ASSERT_EQ(args._wall, 0);
-    ASSERT_EQ(args._alloc, 0);
-    ASSERT_EQ(args._nativemem, 0);
+    ASSERT_EQ(args._alloc, DEFAULT_ALLOC_INTERVAL);
+    ASSERT_EQ(args._nativemem, DEFAULT_ALLOC_INTERVAL);
     ASSERT_EQ(args._lock, DEFAULT_LOCK_INTERVAL);
     ASSERT_EQ(args._live, true);
 }

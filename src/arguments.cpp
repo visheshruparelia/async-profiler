@@ -281,6 +281,9 @@ Error Arguments::parse(const char* args) {
                 if (_event == NULL && OS::isLinux()) {
                     _event = EVENT_CPU;
                 }
+                if (_event == NULL && !OS::isLinux()) {
+                    _event = EVENT_ITIMER;
+                }
 
             CASE("interval")
                 if (value == NULL || (_interval = parseUnits(value, UNIVERSAL)) <= 0) {

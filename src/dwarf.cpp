@@ -91,6 +91,7 @@ DwarfParser::DwarfParser(const char* name, const char* image_base, const char* d
 }
 
 void DwarfParser::parseEhFrameHdr(const char* eh_frame_hdr) {
+    Log::warn("Parsing .eh_frame_hdr in %s", _name);
     u8 version = eh_frame_hdr[0];
     u8 eh_frame_ptr_enc = eh_frame_hdr[1];
     u8 fde_count_enc = eh_frame_hdr[2];
@@ -111,6 +112,7 @@ void DwarfParser::parseEhFrameHdr(const char* eh_frame_hdr) {
 }
 
 void DwarfParser::parseDebugFrame(const char* debug_frame_start, const char* debug_frame_end) {
+    Log::warn("Parsing .debug_frame in %s", _name);
     _ptr = debug_frame_start;
     while (_ptr < debug_frame_end) {
         u32 initial_length = get32();

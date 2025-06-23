@@ -1,0 +1,10 @@
+CXX = g++
+CXXFLAGS = -std=c++11 -Wall -O2
+
+debug_frame_parser: debug_frame_parser.cpp
+	$(CXX) $(CXXFLAGS) -o debug_frame_parser debug_frame_parser.cpp
+
+clean:
+	rm -f debug_frame_parser
+
+.PHONY: clean

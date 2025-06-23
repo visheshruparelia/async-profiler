@@ -1,0 +1,10 @@
+CXX = g++
+CXXFLAGS = -std=c++11 -Wall -g -O0
+
+debug_frame_standalone: debug_frame_standalone.cpp
+	$(CXX) $(CXXFLAGS) -o debug_frame_standalone debug_frame_standalone.cpp
+
+clean:
+	rm -f debug_frame_standalone
+
+.PHONY: clean

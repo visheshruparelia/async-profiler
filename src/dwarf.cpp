@@ -165,7 +165,7 @@ void DwarfParser::parseDebugFrameCie(const char* entry_start, u64 length) {
 }
 
 void DwarfParser::parseDebugFrameFde(const char* entry_start, u64 length, u64 cie_offset) {
-    u64 initial_location = *(u64*)(_ptr - _image_base);
+    u64 initial_location = *(u64*)_ptr;
     _ptr += 8;
     u64 address_range = *(u64*)_ptr;
     _ptr += 8;

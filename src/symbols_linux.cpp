@@ -275,6 +275,7 @@ class ElfParser {
     void loadSymbolTable(const char* symbols, size_t total_size, size_t ent_size, const char* strings);
     void addRelocationSymbols(ElfSection* reltab, const char* plt);
     const char* getDebuginfodCache();
+    void parseDebugFrameSection();
 
   public:
     static void parseProgramHeaders(CodeCache* cc, const char* base, const char* end, bool relocate_dyn);

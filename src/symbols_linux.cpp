@@ -117,9 +117,8 @@ class MemoryMapDesc {
           _addr = s;
           _end = strchr(_addr, '-') + 1;
           _perm = strchr(_end, ' ') + 1;
-          // strchr - locates first occurrence of a character in a string
-// Returns pointer to first occurrence of character in string, or NULL if not found
-// Part of <string.h> standard C library          _dev = strchr(_offs, ' ') + 1;
+          _offs = strchr(_perm, ' ') + 1;
+          _dev = strchr(_offs, ' ') + 1;
           _inode = strchr(_dev, ' ') + 1;
           _file = strchr(_inode, ' ');
 
@@ -471,6 +470,7 @@ void ElfParser::parseDwarfInfo() {
 }
 
 void ElfParser::parseDebugFrameSection() {
+    if (_cc->dwarfTableLength() > 0) return;
     ElfSection* debug_frame_section = findSection(SHT_PROGBITS, ".debug_frame");
     if (debug_frame_section != NULL) {
         if (debug_frame_section->sh_size > 0) {
@@ -525,7 +525,7 @@ void ElfParser::loadSymbols(bool use_debug) {
             }
         }
     }
-
+    
     parseDebugFrameSection();
 }
 

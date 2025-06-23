@@ -126,7 +126,7 @@ void DwarfParser::parseDebugFrame(const char* debug_frame_start, const char* deb
             entry_start = _ptr;
             cie_id = get64();
         } else {
-            // 32-bit DWARF format  
+            // 32-bit DWARF format  ƒ
             length = initial_length;
             entry_start = _ptr;
             cie_id = get32();

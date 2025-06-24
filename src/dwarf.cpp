@@ -141,7 +141,7 @@ void DwarfParser::parseDebugFrame(const char* debug_frame_start, const char* deb
             parseDebugFrameCie(entry_start, length);
         } else {
             // This is an FDE
-            _ptr = entry_start;
+            // _ptr = entry_start;
             parseDebugFrameFde(entry_start, length, cie_id);
             count++;
         }

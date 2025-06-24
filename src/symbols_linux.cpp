@@ -471,6 +471,9 @@ void ElfParser::parseDwarfInfo() {
 }
 
 void ElfParser::parseDebugFrameSection() {
+    if (_cc->dwarfTableLength() > 0) {
+        Log::warn("Already parsed the dwarf table with current size= %d", _cc->dwarfTableLength());
+    }
     ElfSection* debug_frame_section = findSection(SHT_PROGBITS, ".debug_frame");
     if (debug_frame_section == NULL) {
         Log::warn("No .debug_frame section found for %s", _cc->name());

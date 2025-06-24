@@ -115,6 +115,7 @@ void DwarfParser::parseDebugFrame(const char* debug_frame_start, const char* deb
     Log::warn("Parsing .debug_frame in %s", _name);
     _ptr = debug_frame_start;
     int count = 0;
+    int cie_count = 0;
     while (_ptr < debug_frame_end) {
         u32 initial_length = get32();
         u64 length;
@@ -139,6 +140,7 @@ void DwarfParser::parseDebugFrame(const char* debug_frame_start, const char* deb
             // This is a CIE
             // _ptr = entry_start;
             parseDebugFrameCie(entry_start, length);
+            cie_count++;
         } else {
             // This is an FDE
             // _ptr = entry_start;
@@ -152,6 +154,7 @@ void DwarfParser::parseDebugFrame(const char* debug_frame_start, const char* deb
         return a.loc < b.loc;
     });
     Log::warn("FDE count: %d", count);
+    Log::warn("CIE count: %d", cie_count);
 }
 
 void DwarfParser::parseDebugFrameCie(const char* entry_start, u64 length) {

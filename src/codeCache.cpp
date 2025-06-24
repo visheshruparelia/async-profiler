@@ -150,7 +150,7 @@ const char* CodeCache::binarySearch(const void* address) {
     if (low > 0 && (_blobs[low - 1]._start == _blobs[low - 1]._end || _blobs[low - 1]._end == address)) {
         return _blobs[low - 1]._name;
     }
-    fprintf("Returning name: %s", _name);
+    fprintf(stderr, "Returning name: %s", _name);
     return _name;
 }
 

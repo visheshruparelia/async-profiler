@@ -148,9 +148,9 @@ const char* CodeCache::binarySearch(const void* address) {
     // Symbols with zero size can be valid functions: e.g. ASM entry points or kernel code.
     // Also, in some cases (endless loop) the return address may point beyond the function.
     if (low > 0 && (_blobs[low - 1]._start == _blobs[low - 1]._end || _blobs[low - 1]._end == address)) {
+        fprintf(stderr, "Returning name: %s\n for address: %p\n", _blobs[low - 1]._name, address);
         return _blobs[low - 1]._name;
     }
-    fprintf(stderr, "Returning name: %s", _name);
     return _name;
 }
 

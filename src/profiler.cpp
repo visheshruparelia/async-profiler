@@ -651,6 +651,7 @@ u64 Profiler::recordSample(void* ucontext, u64 counter, EventType event_type, Ev
         // Async events
         if (_cstack == CSTACK_VM) {
             num_frames += StackWalker::walkVM(ucontext, frames + num_frames, _max_stack_depth, VM_NORMAL);
+            Log::warn("num_frames after vm walk: %d", num_frames);
         } else {
             int java_frames = getJavaTraceAsync(ucontext, frames + num_frames, _max_stack_depth, &java_ctx);
             if (java_frames > 0 && java_ctx.pc != NULL && VMStructs::hasMethodStructs()) {
@@ -660,6 +661,7 @@ u64 Profiler::recordSample(void* ucontext, u64 counter, EventType event_type, Ev
                 }
             }
             num_frames += java_frames;
+            Log::warn("num_frames after all: %d", num_frames);
         }
     } else if (event_type >= ALLOC_SAMPLE && event_type <= ALLOC_OUTSIDE_TLAB && _alloc_engine == &alloc_tracer) {
         VMThread* vm_thread;

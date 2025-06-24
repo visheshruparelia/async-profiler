@@ -438,8 +438,5 @@ FrameDesc* DwarfParser::addRecordRaw(u32 loc, int cfa, int fp_off, int pc_off) {
     f->pc_off = pc_off;
     // Log::warn("    -> Record: loc=0x%u, cfa=r%d+%d, fp_off=%d, pc_off=%d", 
     //       loc, (cfa & 0xff), (cfa >> 8), fp_off, pc_off);
-    if (_capacity > 200) {
-        Log::warn("count : %lld", _count);
-    }
     return f;
 }

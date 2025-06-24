@@ -471,7 +471,6 @@ void ElfParser::parseDwarfInfo() {
 }
 
 void ElfParser::parseDebugFrameSection() {
-    if (_cc->dwarfTableLength() > 0) return;
     ElfSection* debug_frame_section = findSection(SHT_PROGBITS, ".debug_frame");
     if (debug_frame_section != NULL) {
         if (debug_frame_section->sh_size > 0) {

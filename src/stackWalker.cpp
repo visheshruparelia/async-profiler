@@ -440,7 +440,7 @@ int StackWalker::walkVM(void* ucontext, ASGCT_CallFrame* frames, int max_depth,
             break;
         }
 
-        if (pc == sp) {
+        if (pc == &sp) {
             fprintf(stderr, "pc is equal to sp for pc = %p", pc);
             break;
         }

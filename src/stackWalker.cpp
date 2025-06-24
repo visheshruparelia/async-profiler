@@ -259,7 +259,7 @@ int StackWalker::walkVM(void* ucontext, ASGCT_CallFrame* frames, int max_depth,
 
     // Walk until the bottom of the stack or until the first Java frame
     while (depth < max_depth) {
-        fprintf(stderr, "pc val: %p, sp val: %p\n", pc, (const void*)sp);
+        // fprintf(stderr, "pc val: %p, sp val: %p\n", pc, (const void*)sp);
         if (CodeHeap::contains(pc)) {
             NMethod* nm = CodeHeap::findNMethod(pc);
             if (nm == NULL) {
@@ -411,7 +411,8 @@ int StackWalker::walkVM(void* ucontext, ASGCT_CallFrame* frames, int max_depth,
         if (!aligned(sp)) {
             break;
         }
-        const void* prev_pc = pc;
+        const void* prev_pc = pc; // new var to store prev_pc
+        // already existing logic of computing new pc
         if (f->fp_off & DW_PC_OFFSET) {
             pc = (const char*)pc + (f->fp_off >> 1);
         } else {
@@ -441,7 +442,7 @@ int StackWalker::walkVM(void* ucontext, ASGCT_CallFrame* frames, int max_depth,
         }
 
         if (pc == prev_pc && sp == prev_sp) {
-            fprintf(stderr, "pc and sp unchanged for pc: %p", pc);
+            fprintf(stderr, "pc and sp unchanged for pc: %p", pc);  // will remove this
             break;
         }
     }

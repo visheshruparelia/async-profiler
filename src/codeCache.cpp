@@ -150,6 +150,11 @@ const char* CodeCache::binarySearch(const void* address) {
     if (low > 0 && (_blobs[low - 1]._start == _blobs[low - 1]._end || _blobs[low - 1]._end == address)) {
         return _blobs[low - 1]._name;
     }
+    if (strcmp(_name, "clone") == 0) {
+        Log::warn("Returning name: %s", _name);
+    } else {
+        Log::warn("Name: %s", _name);
+    }
     return _name;
 }
 

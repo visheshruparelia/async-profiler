@@ -311,7 +311,7 @@ ElfProgramHeader* ElfParser::findProgramHeader(uint32_t type) {
 }
 
 bool ElfParser::parseFile(CodeCache* cc, const char* base, const char* file_name, bool use_debug) {
-    Log::warn("File name %s", file_name);
+    // Log::warn("File name %s", file_name);
     int fd = open(file_name, O_RDONLY);
     if (fd == -1) {
         return false;

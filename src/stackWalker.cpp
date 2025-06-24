@@ -411,7 +411,7 @@ int StackWalker::walkVM(void* ucontext, ASGCT_CallFrame* frames, int max_depth,
         if (!aligned(sp)) {
             break;
         }
-
+        const void* prev_pc = pc;
         if (f->fp_off & DW_PC_OFFSET) {
             pc = (const char*)pc + (f->fp_off >> 1);
         } else {
@@ -440,8 +440,8 @@ int StackWalker::walkVM(void* ucontext, ASGCT_CallFrame* frames, int max_depth,
             break;
         }
 
-        if (pc == &sp) {
-            fprintf(stderr, "pc is equal to sp for pc = %p", pc);
+        if (pc == prev_pc && sp == prev_sp) {
+            fprintf(stderr, "pc and sp unchanged for pc: %p", pc);
             break;
         }
     }

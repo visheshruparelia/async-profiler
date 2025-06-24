@@ -64,7 +64,7 @@ DwarfParser::DwarfParser(const char* name, const char* image_base, const char* e
     _name = name;
     _image_base = image_base;
 
-    _capacity = 128;
+    _capacity = 256000;
     _count = 0;
     _table = (FrameDesc*)malloc(_capacity * sizeof(FrameDesc));
     _prev = NULL;
@@ -79,7 +79,7 @@ DwarfParser::DwarfParser(const char* name, const char* image_base, const char* d
     _name = name;
     _image_base = image_base;
 
-    _capacity = 128;
+    _capacity = 256000;
     _count = 0;
     _table = (FrameDesc*)malloc(_capacity * sizeof(FrameDesc));
     _prev = NULL;
@@ -436,7 +436,8 @@ FrameDesc* DwarfParser::addRecordRaw(u32 loc, int cfa, int fp_off, int pc_off) {
     f->cfa = cfa;
     f->fp_off = fp_off;
     f->pc_off = pc_off;
-    Log::warn("    -> Record: loc=0x%u, cfa=r%d+%d, fp_off=%d, pc_off=%d", 
-          loc, (cfa & 0xff), (cfa >> 8), fp_off, pc_off);
+    // Log::warn("    -> Record: loc=0x%u, cfa=r%d+%d, fp_off=%d, pc_off=%d", 
+    //       loc, (cfa & 0xff), (cfa >> 8), fp_off, pc_off);
+    Log::warn("count : %lld", _count);
     return f;
 }

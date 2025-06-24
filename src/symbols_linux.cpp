@@ -481,10 +481,10 @@ void ElfParser::parseDebugFrameSection() {
             DwarfParser dwarf(_cc->name(), _base, section_start, section_start + debug_frame_section->sh_size);
             _cc->setDwarfTable(dwarf.table(), dwarf.count());
             Log::warn("*****************For file %s", _cc->name());
-            for (u64 i = 0; i < dwarf.count(); i++) {
-                Log::warn("Dwarf table idx = %d, loc = %u, cfa = %d, fp_off = %d, pc_off = %d", i, dwarf.table()[i].loc,
-                dwarf.table()[i].cfa, dwarf.table()[i].fp_off, dwarf.table()[i].pc_off);
-            }
+            // for (u64 i = 0; i < dwarf.count(); i++) {
+            //     Log::warn("Dwarf table idx = %lld, loc = %u, cfa = %d, fp_off = %d, pc_off = %d", i, dwarf.table()[i].loc,
+            //     dwarf.table()[i].cfa, dwarf.table()[i].fp_off, dwarf.table()[i].pc_off);
+            // }
         } else if (strcmp(_cc->name(), "[vdso]") == 0) {
             FrameDesc* table = (FrameDesc*)malloc(sizeof(FrameDesc));
             *table = FrameDesc::empty_frame;

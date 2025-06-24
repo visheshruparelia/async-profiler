@@ -259,7 +259,7 @@ int StackWalker::walkVM(void* ucontext, ASGCT_CallFrame* frames, int max_depth,
 
     // Walk until the bottom of the stack or until the first Java frame
     while (depth < max_depth) {
-        fprintf(stderr, "pc val: %p\n", pc);
+        fprintf(stderr, "pc val: %p, sp val: %p\n", pc, (const void**)sp);
         if (CodeHeap::contains(pc)) {
             NMethod* nm = CodeHeap::findNMethod(pc);
             if (nm == NULL) {

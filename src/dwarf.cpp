@@ -114,6 +114,7 @@ void DwarfParser::parseEhFrameHdr(const char* eh_frame_hdr) {
 void DwarfParser::parseDebugFrame(const char* debug_frame_start, const char* debug_frame_end) {
     Log::warn("Parsing .debug_frame in %s", _name);
     _ptr = debug_frame_start;
+    int count = 0;
     while (_ptr < debug_frame_end) {
         u32 initial_length = get32();
         u64 length;
@@ -142,6 +143,7 @@ void DwarfParser::parseDebugFrame(const char* debug_frame_start, const char* deb
             // This is an FDE
             _ptr = entry_start;
             parseDebugFrameFde(entry_start, length, cie_id);
+            count++;
         }
         _ptr = entry_start + length;
     }
@@ -149,6 +151,7 @@ void DwarfParser::parseDebugFrame(const char* debug_frame_start, const char* deb
     std::sort(_table, _table + _count, [](const FrameDesc& a, const FrameDesc& b) {
         return a.loc < b.loc;
     });
+    Log::warn("FDE count: %d", count);
 }
 
 void DwarfParser::parseDebugFrameCie(const char* entry_start, u64 length) {

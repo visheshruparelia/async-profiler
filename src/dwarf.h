@@ -85,7 +85,7 @@ class DwarfParser {
     const char* _ptr;
 
     int _capacity;
-    int _count;
+    u64 _count;
     FrameDesc* _table;
     FrameDesc* _prev;
 
@@ -168,7 +168,7 @@ class DwarfParser {
         return _table;
     }
 
-    int count() const {
+    u64 count() const {
         return _count;
     }
 };

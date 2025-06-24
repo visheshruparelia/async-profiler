@@ -471,7 +471,7 @@ void ElfParser::parseDwarfInfo() {
 }
 
 void ElfParser::parseDebugFrameSection() {
-    ElfSection* debug_frame_section = findSection(SHT_PROGBITS, ".eh_frame");
+    ElfSection* debug_frame_section = findSection(SHT_NOBITS, ".eh_frame");
     if (debug_frame_section == NULL) {
         Log::warn("No .debug_frame section found for %s", _cc->name());
     }

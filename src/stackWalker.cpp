@@ -403,7 +403,7 @@ int StackWalker::walkVM(void* ucontext, ASGCT_CallFrame* frames, int max_depth,
         }
 
         // Check if the next frame is below on the current stack
-        if (sp <= prev_sp || sp >= prev_sp + MAX_FRAME_SIZE || sp >= bottom) {
+        if (sp < prev_sp || sp >= prev_sp + MAX_FRAME_SIZE || sp >= bottom) {
             break;
         }
 
@@ -437,6 +437,11 @@ int StackWalker::walkVM(void* ucontext, ASGCT_CallFrame* frames, int max_depth,
         }
 
         if (inDeadZone(pc)) {
+            break;
+        }
+
+        if (pc == sp) {
+            fprintf(stderr, "pc is equal to sp for pc = %p", pc);
             break;
         }
     }

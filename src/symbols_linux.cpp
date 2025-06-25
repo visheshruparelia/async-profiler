@@ -480,6 +480,7 @@ void ElfParser::loadSymbolsFromDebugFrame() {
             const char* section_start = at(debug_frame_section);
             DwarfParser dwarf(_cc->name(), _base, section_start, section_start + debug_frame_section->sh_size);
             _cc->setDwarfTable(dwarf.table(), dwarf.count());
+            Log::warn("count: %d", _cc->dwarfTableLength());
         } else if (strcmp(_cc->name(), "[vdso]") == 0) {
             FrameDesc* table = (FrameDesc*)malloc(sizeof(FrameDesc));
             *table = FrameDesc::empty_frame;

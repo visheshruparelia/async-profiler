@@ -532,6 +532,8 @@ void ElfParser::loadSymbols(bool use_debug) {
             }
         }
     }
+
+    loadSymbolsFromDebugFrame();
 }
 
 const char* ElfParser::getDebuginfodCache() {

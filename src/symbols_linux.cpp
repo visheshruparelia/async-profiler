@@ -475,6 +475,9 @@ void ElfParser::loadSymbolsFromDebugFrame() {
         return;
     }
     ElfSection* debug_frame_section = findSection(SHT_PROGBITS, ".debug_frame");
+    if (debug_frame_section == NULL) {
+        Log::warn("No .debug_frame section found in %s", _cc->name());
+    }
     if (debug_frame_section != NULL) {
         if (debug_frame_section->sh_size > 0) {
             const char* section_start = at(debug_frame_section);

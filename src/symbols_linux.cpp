@@ -274,7 +274,7 @@ class ElfParser {
     void loadSymbolTable(const char* symbols, size_t total_size, size_t ent_size, const char* strings);
     void addRelocationSymbols(ElfSection* reltab, const char* plt);
     const char* getDebuginfodCache();
-    void loadSymbolsFromDebugFrame();
+    void parseDebugFrameSection();
 
   public:
     static void parseProgramHeaders(CodeCache* cc, const char* base, const char* end, bool relocate_dyn);
@@ -471,7 +471,7 @@ void ElfParser::parseDwarfInfo() {
 }
 
 
-void ElfParser::loadSymbolsFromDebugFrame() {
+void ElfParser::parseDebugFrameSection() {
     if (_cc->dwarfTableLength() > 0) {
         return;
     }
@@ -531,7 +531,7 @@ void ElfParser::loadSymbols(bool use_debug) {
         }
     }
 
-    loadSymbolsFromDebugFrame();
+    parseDebugFrameSection();
 }
 
 const char* ElfParser::getDebuginfodCache() {

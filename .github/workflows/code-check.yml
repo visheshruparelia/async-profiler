@@ -1,11 +1,7 @@
 name: code-check
 
 on:
-  - pull_request
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+- pull_request
 
 jobs:
   cpp-lint:
@@ -34,7 +30,6 @@ jobs:
             CLANG_TIDY_ARGS_EXTRA="-export-fixes clang-tidy-fixes.yml"
         shell: bash
       - name: Run clang-tidy-pr-comments action
-        if: github.event.pull_request.draft == false
         uses: platisd/clang-tidy-pr-comments@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
